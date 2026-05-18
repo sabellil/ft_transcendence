@@ -11,3 +11,5 @@ app.get("/", (req, res) => {//route HTTP GET, / page principale du backend
 app.listen(3000, () => {//demarre le serveur sur le port 3000, backend ecoute localhost:3000
     console.log("Server running on port 3000");//msg affiche dans le terminal quand le serveur demarre
 });
+
+//TODO connect frontend to backend
