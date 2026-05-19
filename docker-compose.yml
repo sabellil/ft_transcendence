@@ -5,7 +5,7 @@ services:
 
     env_file:
       - .env
-
+#rediriger le port 5432 de notre machine sur le conteneur PostgreSQL qui ecoute sur son port 5432 
     ports:
       - "5432:5432"
 
