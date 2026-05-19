@@ -1,6 +1,7 @@
 const express = require("express");//importation de la biblio Express, comme un include
-
+const cors = require("cors");
 const app = express();//serveur backend
+app.use(cors());
 
 app.get("/", (req, res) => {//route HTTP GET, / page principale du backend
     res.send("Backend running");//envoie reponse texte au navigateur
