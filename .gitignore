@@ -1,0 +1,15 @@
+# npm dependences
+node_modules
+
+# passwords, API keys...
+.env
+**/.env
+
+# files generated for frontend building
+dist
+
+# other files for frameworks and tools
+build
+
+# tests
+coverage
