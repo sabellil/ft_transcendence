@@ -1,15 +1,2 @@
-# npm dependences
-node_modules
-
-# passwords, API keys...
-.env
-
-
-# files generated for frontend building
-dist
-
-# other files for frameworks and tools
-build
-
-# tests
-coverage
+https://codelynx.dev/posts/fetch-en-react
+https://react.dev/reference/react/useState
