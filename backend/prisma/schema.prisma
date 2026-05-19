@@ -3,15 +3,17 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
+//Generer un Prisma CLient JS, outil pour faire findMany() ou encore create()
 generator client {
   provider = "prisma-client-js"
 }
 
+//Fournir a Prisma la bdd
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL)
 }
 
+//Modele pour notre premiere table SQL
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
