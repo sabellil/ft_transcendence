@@ -12,5 +12,28 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  backend: 
+    build:
+    container_name: transcendence_backend
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+    container_name: transcendence_frontend
+    env_file:
+      - .env
+    ports: "5173:5173"
+    depends_on: backend
+
+
 volumes:
   postgres_data:
+
+#Docker va buid l'image Docker frontend, puis backend
+#Telecharger l'image Postgres si besoin
+#Demarrer postgres, backend puis frontend
