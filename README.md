@@ -53,28 +53,28 @@ https://vite.dev/config/server-options.html
 https://vite.dev/config/server-options.html
 
 2. Backend init
-It was initalized with Node.js and Express. 
+It was initalized with Node.js and Fastify. 
 
 np init -y
 
 Installed packages : 
-npm install express cors dotenv
+npm install express cors dotenv //A CHANGER
 npm install -D nodemon
 
-- Express is a backend web framework 
+- Fastify is a backend web framework 
 - Cors allows frontend and backend to coummincate
 - Dotenv enable the loading of env variables
 - Nodemon automaticaly restarts the server during development
 
 
-https://expressjs.com/en/
+https://codeheroes.fr/blog/a-la-decouverte-de-fastify/
 
 ENV
 Sensitive informations are stored inside .env files. 
 For that reason we made sur they were ignored by Git using a .gitignore file. 
 
-EXPRESS SERVER
-A simple Express server was created inside backend/src/index.js
+FASTIFY SERVER
+A simple Fastify server was created inside backend/src/index.js
 
 The point here was to understand HTTP routes, how requests and responses work and the structure of a backend server
 
@@ -83,7 +83,7 @@ React frontend communicate with Express backend using fetch()
 
 Explanation of the flow process :
 - React frontend sends a request (req) using fetch()
-- Express backend is reached through its API routes and sends a JSON response to frontend
+- Fastify backend is reached through its API routes and sends a JSON response to frontend
 - React displays the data on the web page
 
 It helped udnerstand API routes, HTTP requests and JSON responses
@@ -91,6 +91,7 @@ It helped udnerstand API routes, HTTP requests and JSON responses
 https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview
 https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON
+
 
 CORS (CROSS ORIGIN RESOURCE SHARING)
 The frontend and backend run on diferents ports by default.
