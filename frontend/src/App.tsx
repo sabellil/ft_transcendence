@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 function App(){
   const [message, setMessage] = useState("");//message = "hello from backend" du package.json, setMessage pour modifier message, mais ici vide
   useEffect(() => {//exec du code autom. qund la page charge
-    fetch("http://localhost:3000/api/test")//frontend appelle le backend Express en enovyant une requete HTTP vers local...
+    fetch("http://localhost:3000/api/test")//frontend appelle le backend  en enovyant une requete HTTP vers local...
       .then((res) => res.json())//recupere la res (reponse http brute) et la convertit en Javascript
       .then((data) => {
           setMessage(data.message);
