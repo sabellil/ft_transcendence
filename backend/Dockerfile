@@ -1,20 +1,20 @@
-//image Docker deja prete
+#image Docker deja prete
 FROM node:20-alpine
 
-//dossier de travail dans le conteneur
+#dossier de travail dans le conteneur
 WORKDIR /app
 
-//copie de package.json et package-lock.json dans le conteneur
+#copie de package.json et package-lock.json dans le conteneur
 COPY package*.json ./
 
-//installation des dependances Nodes (fastify, prisma etc) dans le conteneur
+#installation des dependances Nodes (fastify, prisma etc) dans le conteneur
 RUN npm install
 
-//copie de tout le backend dans le conteneur
+#copie de tout le backend dans le conteneur
 COPY . .
 
-//app backend ecoute sur le port 3000 a linterieur du conteneur
+#app backend ecoute sur le port 3000 a linterieur du conteneur
 EXPOSE 3000
 
-//commandes executees autom. quand le conteneur demarre
+#commandes executees autom. quand le conteneur demarre
 CMD ["npm", "run", "dev"]
