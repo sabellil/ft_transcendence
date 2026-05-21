@@ -116,6 +116,7 @@ https://docs.docker.com/engine/storage/volumes/
 https://docs.docker.com/get-started/docker-concepts/running-containers/publishing-ports
 https://hub.docker.com/_/postgres
 https://www.postgresql.org/docs/
+https://docs.docker.com/reference/compose-file/build/ helped with structuring docker-compose.yml file and filling in
 
 PRISMA ORM
 Prisma is the interface that enables communication between Express bakcend and PostgreSQL, it's an ORM (object relational mapping). 
