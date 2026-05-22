@@ -1,36 +1,51 @@
-const Fastify = require("fastify");//installation de la biblio, comme un include
+const Fastify = require("fastify");//importation de la biblio fastify
 
-const app = Fastify({
-    logger: true
+
+const app = Fastify({//creation serveur fastify
+   logger: true//pour afficher les infos autom. dans le terminal
 });
 
-app.register(require("@fastify/cors"));
 
-app.get("/", async (request, reply) => {//route HTTP GET, / page principale du backend
+app.register(require("@fastify/cors"));// branchement systeme de plugins
 
-    return "Backend running";
 
-});//ferme la route GET
-//request recue du client : contient URL body header user etc
-//reply envoyee au client
+//importation des routes
+const authRoutes = require("./routes/auth");
+const usersRoutes = require("./routes/users");
+const friendsRoutes = require("./routes/friends");
+const orgRoutes = require("./routes/orgs");
 
-app.get("/api/test", async (request, reply) => {
 
-    return {
-        message: "Hello from backend"
-    };
-
+//branchement des routes syr /api/auth
+app.register(authRoutes, {
+   prefix: "/api/auth"
 });
 
-//autorisation des connexions internes, utiles plus tard pour Docker
+
+app.register(usersRoutes, {
+   prefix: "/api/users"
+});
+
+
+app.register(friendsRoutes, {
+   prefix: "/api/friends"
+});
+
+
+app.register(orgRoutes, {
+   prefix: "/api/orgs"
+});
+
+
+//creation rout principale pour confirmer que le backend tourne bien
+app.get("/", async (request, reply) => {
+   return "Backend running";
+});
+
+
+//demarre le serveur sur le port 3000 accesisble depuis DOcker et le reseau
 app.listen({
-    port: 3000,
-    host: "0.0.0.0"
+port:3000,
+host:"0.0.0.0"
 });
 
-/*
-TODO connect frontend to backend --> besoin de route API backend 
-Process: 
-- Frontend React demande a voir mon profil avec GET /api/users/me
-- Backend Fastify recoit la req, verifie le token JWT, cherche les infos en bdd et renvoie la resq. 
-*/
