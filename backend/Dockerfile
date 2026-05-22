@@ -1,5 +1,5 @@
 #image Docker deja prete
-FROM node:20-alpine
+FROM node:24-alpine
 
 #dossier de travail dans le conteneur
 WORKDIR /app
