@@ -8,7 +8,10 @@ const app = Fastify({//creation serveur fastify
 
 app.register(require("@fastify/cors"));// branchement systeme de plugins
 
-
+//checker cors origin
+//checke rcookie, 
+//mysql et  postegres (peut ps passer pour postgre ca rjai prisma)
+//rout epour voir les orutes corretcemen tenregistrer, pratique pour debug 
 //importation des routes
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
@@ -16,7 +19,7 @@ const friendsRoutes = require("./routes/friends");
 const orgRoutes = require("./routes/orgs");
 
 
-//branchement des routes syr /api/auth
+//branchement des routes syr /api/auth (API REST)
 app.register(authRoutes, {
    prefix: "/api/auth"
 });
