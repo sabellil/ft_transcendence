@@ -1,4 +1,6 @@
-async function usersRoutes(app, options)
+import type { FastifyInstance } from "fastify";
+
+async function usersRoutes(app: FastifyInstance, options)
 {
     app.get("/test", async (request, reply) =>
     {
@@ -8,6 +10,6 @@ async function usersRoutes(app, options)
     });
 }
 
-module.exports = usersRoutes;
+export default usersRoutes;
 
 //profil, update du profil

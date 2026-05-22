@@ -16,5 +16,7 @@ COPY . .
 #app backend ecoute sur le port 3000 a linterieur du conteneur
 EXPOSE 3000
 
+RUN npm run build
+
 #commandes executees autom. quand le conteneur demarre
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]

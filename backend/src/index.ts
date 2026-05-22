@@ -1,22 +1,22 @@
-const Fastify = require("fastify");//importation de la biblio fastify
+import Fastify from "fastify";//importation de la biblio fastify
 
 
 const app = Fastify({//creation serveur fastify
    logger: true//pour afficher les infos autom. dans le terminal
 });
 
-
-app.register(require("@fastify/cors"));// branchement systeme de plugins
+import fastifyCors from "@fastify/cors";
+app.register(fastifyCors);// branchement systeme de plugins
 
 //checker cors origin
 //checke rcookie, 
 //mysql et  postegres (peut ps passer pour postgre ca rjai prisma)
 //rout epour voir les orutes corretcemen tenregistrer, pratique pour debug 
 //importation des routes
-const authRoutes = require("./routes/auth");
-const usersRoutes = require("./routes/users");
-const friendsRoutes = require("./routes/friends");
-const orgRoutes = require("./routes/orgs");
+import authRoutes from "./routes/auth.ts";
+import usersRoutes from "./routes/users.ts";
+import friendsRoutes from "./routes/friends.ts";
+import orgRoutes from "./routes/orgs.ts";
 
 
 //branchement des routes syr /api/auth (API REST)

@@ -8,6 +8,6 @@ async function orgRoutes(app, options)
     });
 }
 
-module.exports = orgRoutes;
+export default orgRoutes;
 
 //organisations
