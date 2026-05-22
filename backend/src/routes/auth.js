@@ -8,6 +8,6 @@ async function authRoutes(app, options)
     });
 }
 
-module.export = authRoutes;//rend authRoutes utilisable depuis index.js
+module.exports = authRoutes;//rend authRoutes utilisable depuis index.js
 
 //pour login register logout
