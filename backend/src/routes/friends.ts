@@ -3,9 +3,11 @@ import {
 } from "../middleware/authMiddleware.js";
 
 import {
-	getFriends
+	getFriends,
+	addFriend
 }
 from "../controllers/friendsController.js";
+
 import { request } from "http";
 
 async function friendsRoutes(app, options)//option eventuelles config ou plugins pour plus tard?
@@ -32,9 +34,31 @@ async function friendsRoutes(app, options)//option eventuelles config ou plugins
 			);
 
 		return friends;
-	}
-);
+	});
+    app.post(
+	"/add/:id",
+	async (request, reply) =>
+	{
+		const user =
+			request.user as {
+				id:number
+			};
 
+		const {
+			id
+		} =
+		request.params as {
+			id:string
+		};
+
+		const friend =
+			await addFriend(
+				user.id,
+				Number(id)
+			);
+
+		return friend;
+	});
 }
 
 export default friendsRoutes;
