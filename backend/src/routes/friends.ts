@@ -2,6 +2,12 @@ import {
     authMiddleware 
 } from "../middleware/authMiddleware.js";
 
+import {
+	getFriends
+}
+from "../controllers/friendsController.js";
+import { request } from "http";
+
 async function friendsRoutes(app, options)//option eventuelles config ou plugins pour plus tard?
 {
     app.addHook("preHandler", authMiddleware);//middleware pour auth avant chaque route, sinon error 401 unauthorized
@@ -11,6 +17,24 @@ async function friendsRoutes(app, options)//option eventuelles config ou plugins
             message: "Friends route works"
         };
     });
+    app.get(
+	"/",
+	async (request, reply) =>
+	{
+		const user =
+			request.user as {
+				id:number
+			};
+
+		const friends =
+			await getFriends(
+				user.id
+			);
+
+		return friends;
+	}
+);
+
 }
 
 export default friendsRoutes;

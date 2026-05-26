@@ -1,0 +1,36 @@
+1. Framework Front + Back 2 pts 
+react + fastify + Docker OK 
+
+2. PostgreSQL + Prisma ORM 1 pt 
+POstgres + Prisma + migrations + relations OK
+
+3.  User management 2 pts 
+Register OK
+Login OK
+Logout OK 
+JWT OK
+Route protegees OK 
+Profil utilisateur reel 
+Update profil 
+
+4. User interaction 2 pts 
+JWT protege friends OK
+Add friends
+Remove friends
+Liste friends
+Eventuellement chat 
+
+Organization system 2 pts 
+Routes orgs OK
+Logique de creation d'organisation 
+Rejoindre organisation
+Quitter organisation 
+Membres organisations
+
+5. Socket.io 2 pts 
+
+6. Notifications 1pt 
+
+7. Upload avatar
+
+8. OAuth 1 pt
