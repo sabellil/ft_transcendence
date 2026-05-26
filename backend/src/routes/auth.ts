@@ -7,6 +7,11 @@ import {
 	loginUser
 } from "../controllers/authController.js";
 
+import {
+	authMiddleware
+}
+from "../middleware/authMiddleware.js";
+
 	async function authRoutes(
 	app: FastifyInstance,
 	options
@@ -118,32 +123,46 @@ import {
 				});
 		}
 	);
-	app.post(
-	"/login",
-	async (request, reply) =>
-	{
-		const {
-			email,
-			password
-		} =
-		request.body as {
-			email: string;
-			password: string;
-		};
 
-		const token =
-			await loginUser(
+	app.post(
+		"/login",
+		async (request, reply) =>
+		{
+			const {
 				email,
 				password
-			);
+			} =
+			request.body as {
+				email: string;
+				password: string;
+			};
 
-		return {
-			token
-		};
-	}
-);
+			const token =
+				await loginUser(
+					email,
+					password
+				);
+
+			return {
+				token
+			};
+		}
+	);
+
+	app.post(
+		"/logout",
+		{
+			preHandler: authMiddleware
+		},
+		async (request, reply) =>
+		{
+			return {
+				message:
+				"Logout successful"
+			};
+		}
+	);
 }
-
 export default authRoutes;//rend authRoutes utilisable depuis index.js (TODO export e tmeyrte en tx)
 
 //pour login register logout
