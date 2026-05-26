@@ -23,3 +23,18 @@ export async function getFriends(
 
 	return friends;
 }
+
+export async function addFriend(
+	senderId: number,
+	receiverId: number
+)
+{
+	return await prisma.friendship.create({
+		data:
+		{
+			senderId,
+			receiverId,
+			status: "pending"
+		}
+	});
+}
