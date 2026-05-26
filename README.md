@@ -147,3 +147,6 @@ https://www.prisma.io/docs
 https://www.prisma.io/docs/orm/prisma-schema/overview
 https://www.prisma.io/docs/orm/prisma-schema/data-model/models
 https://www.prisma.io/docs/orm/core-concepts/supported-databases/postgresql
+
+JWT 
+https://medium.com/@atatijr/token-based-authentication-with-fastify-jwt-and-typescript-1fa5cccc63c5

@@ -1,3 +1,7 @@
+import { 
+    authMiddleware 
+} from "../middleware/authMiddleware.js";
+
 async function friendsRoutes(app, options)//option eventuelles config ou plugins pour plus tard?
 {
     app.get("/test", async (request, reply) =>
