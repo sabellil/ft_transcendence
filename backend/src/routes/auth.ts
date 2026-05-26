@@ -2,8 +2,12 @@ import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { authTestParams } from "../schema/auth/exemple.ts";
 import authTestParamsSchema from "../schema/auth/exemple.ts";
 
-import { registerUser } from "../controllers/authController.js";
-async function authRoutes(
+import {
+	registerUser,
+	loginUser
+} from "../controllers/authController.js";
+
+	async function authRoutes(
 	app: FastifyInstance,
 	options
 )
@@ -114,6 +118,30 @@ async function authRoutes(
 				});
 		}
 	);
+	app.post(
+	"/login",
+	async (request, reply) =>
+	{
+		const {
+			email,
+			password
+		} =
+		request.body as {
+			email: string;
+			password: string;
+		};
+
+		const token =
+			await loginUser(
+				email,
+				password
+			);
+
+		return {
+			token
+		};
+	}
+);
 }
 
 export default authRoutes;//rend authRoutes utilisable depuis index.js (TODO export e tmeyrte en tx)
