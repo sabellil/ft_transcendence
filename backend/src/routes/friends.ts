@@ -4,7 +4,8 @@ import {
 
 import {
 	getFriends,
-	addFriend
+	addFriend,
+    getPendingFriends
 }
 from "../controllers/friendsController.js";
 
@@ -59,6 +60,20 @@ async function friendsRoutes(app, options)//option eventuelles config ou plugins
 
 		return friend;
 	});
+    app.get(
+	"/pending",
+	async (request, reply) =>
+	{
+		const user =
+			request.user as {
+				id:number
+			};
+
+		return await getPendingFriends(
+			user.id
+		);
+	}
+);
 }
 
 export default friendsRoutes;

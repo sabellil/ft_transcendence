@@ -38,3 +38,16 @@ export async function addFriend(
 		}
 	});
 }
+
+export async function getPendingFriends(
+	userId: number
+)
+{
+	return await prisma.friendship.findMany({
+		where:
+		{
+			receiverId: userId,
+			status: "pending"
+		}
+	});
+}
