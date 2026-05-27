@@ -15,22 +15,22 @@ Update profil
 
 4. User interaction 2 pts 
 JWT protege friends OK
-Add friends
-Remove friends
-Liste friends
+Add friends OK
+Remove friends OK
+Liste friends OK
 Eventuellement chat 
 
-Organization system 2 pts 
+5. Organization system 2 pts 
 Routes orgs OK
 Logique de creation d'organisation 
 Rejoindre organisation
 Quitter organisation 
 Membres organisations
 
-5. Socket.io 2 pts 
+6. Socket.io 2 pts 
 
-6. Notifications 1pt 
+7. Notifications 1pt 
 
-7. Upload avatar
+8. Upload avatar
 
-8. OAuth 1 pt
+9. OAuth 1 pt

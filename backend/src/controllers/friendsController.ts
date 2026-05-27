@@ -67,3 +67,15 @@ export async function acceptFriend(
 		}
 	});
 }
+
+export async function removeFriend(
+	friendshipId:number
+)
+{
+	return await prisma.friendship.delete({
+		where:
+		{
+			id: friendshipId
+		}
+	});
+}

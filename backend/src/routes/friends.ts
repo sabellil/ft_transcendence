@@ -6,7 +6,8 @@ import {
 	getFriends,
 	addFriend,
     getPendingFriends,
-	acceptFriend
+	acceptFriend,
+	removeFriend
 }
 from "../controllers/friendsController.js";
 
@@ -88,8 +89,24 @@ async function friendsRoutes(app, options)//option eventuelles config ou plugins
 		return await acceptFriend(
 			Number(id)
 		);
+	});
+	app.delete(
+	"/:id",
+	async (request, reply) =>
+	{
+		const {
+			id
+		} =
+		request.params as {
+			id:string
+		};
+
+		return await removeFriend(
+			Number(id)
+		);
 	}
 );
+
 }
 
 export default friendsRoutes;
