@@ -46,7 +46,16 @@ export async function loginUser(
 
 	if (!valid)
 		throw new Error("Invalid credentials");
-
+	await prisma.user.update({
+	where:
+	{
+		id:user.id
+	},
+	data:
+	{
+		isOnline:true
+	}
+});
 	const token =
 		jwt.sign(
 			{
@@ -62,14 +71,3 @@ export async function loginUser(
 	return token;
 }
 
-export async function removeFriend(
-	friendshipId:number
-)
-{
-	return await prisma.friendship.delete({
-		where:
-		{
-			id: friendshipId
-		}
-	});
-}

@@ -30,19 +30,10 @@ limiting, documentation, and at least 5 endpoints: 2pts
 ◦ PUT /api/{something}
 ◦ DELETE /api/{something}
 
-- Allow users to interact with other users. The minimum requirements are:
-◦ A basic chat system (send/receive messages between users). 2pts
-◦ A profile system (view user information).
-◦ A friends system (add/remove friends, see friends list).
-
-- (Dependant du module ci-dessus) Advanced chat features (enhances the basic chat from "User interaction"
-module). 1pt
-◦ Ability to block users from messaging you.
-◦ Invite users to play games directly from chat.
-◦ Game/tournament notifications in chat.
-◦ Access to user profiles from chat interface.
-◦ Chat history persistence.
-◦ Typing indicators and read receipts.
+- Allow users to interact with other users. The minimum requirements are: 2pts
+◦ A basic chat system (send/receive messages between users).
+◦ A profile system (view user information). OK 
+◦ A friends system (add/remove friends, see friends list). OK
 
 - Advanced permissions system: 2pts
 ◦ View, edit, and delete users (CRUD).
