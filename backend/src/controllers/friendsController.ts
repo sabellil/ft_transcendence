@@ -51,3 +51,19 @@ export async function getPendingFriends(
 		}
 	});
 }
+
+export async function acceptFriend(
+	friendshipId: number
+)
+{
+	return await prisma.friendship.update({
+		where:
+		{
+			id: friendshipId
+		},
+		data:
+		{
+			status: "accepted"
+		}
+	});
+}
