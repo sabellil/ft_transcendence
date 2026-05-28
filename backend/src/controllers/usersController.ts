@@ -20,6 +20,7 @@ export async function updateMe(
 			id:true,
 			email:true,
 			username:true,
+			avatar:true,
 		}
 	});
 }
@@ -38,8 +39,8 @@ export async function getMe(
 			id:true,
 			email:true,
 			username:true,
-			isOnline:true
-
+			isOnline:true,
+			avatar:true,
 		}
 	});
 }

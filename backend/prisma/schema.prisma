@@ -19,7 +19,7 @@ model User {
   email     String   @unique
   username  String   @unique
   password  String
-  avatar    String?
+  avatar    String   @default("/avatars/default.png")
   isOnline  Boolean  @default(false)
   createdAt DateTime @default(now())
 

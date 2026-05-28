@@ -46,6 +46,7 @@ export async function loginUser(
 
 	if (!valid)
 		throw new Error("Invalid credentials");
+	
 	await prisma.user.update({
 	where:
 	{
