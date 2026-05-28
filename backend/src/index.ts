@@ -8,6 +8,9 @@ const app = Fastify({//creation serveur fastify
 import fastifyCors from "@fastify/cors";
 app.register(fastifyCors);// branchement systeme de plugins
 
+import multipart from "@fastify/multipart";
+app.register(multipart);//pour gerer les fichiers envoyes par le client (avatar)
+
 //checker cors origin
 //checke rcookie, 
 //mysql et  postegres (peut ps passer pour postgre ca rjai prisma)
