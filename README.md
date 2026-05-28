@@ -150,3 +150,10 @@ https://www.prisma.io/docs/orm/core-concepts/supported-databases/postgresql
 
 JWT 
 https://medium.com/@atatijr/token-based-authentication-with-fastify-jwt-and-typescript-1fa5cccc63c5
+
+
+FRONTEND
+
+https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/input
+https://dev.to/cesareferrari/handling-input-field-updates-in-react-47oe
+https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/placeholder

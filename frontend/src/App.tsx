@@ -44,7 +44,7 @@ function App()
 		//Need to ecrire du html React ici ! affichage de la page, formulaire de login
   <div>
       <h1>Login</h1>
-      <input type = "email" onChange={(e) => setEmail(e.target.value)}/>
+      <input type = "email" placeholder ="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
   </div>
 
 	);
