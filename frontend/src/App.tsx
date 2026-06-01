@@ -67,12 +67,13 @@ function App()
 					headers:
 					{
 						Authorization:
-						`Bearer ${data.token}}`
+						`Bearer ${data.token}`
 					}
 				}
 			);
 			const friendsData = await friendsResponse.json();
 			setFriends(friendsData);
+			console.log(friendsData);
 		}
 	if (profile)
 		{
@@ -86,12 +87,8 @@ function App()
 
 				<h2>Friends</h2>
 				{
-					friends.map((friend:any) => (
-						<div key={friend.id} >
-							{friend.username}
-							- Online: {String(friend.isOnline)}
-						</div>
-					))
+					<p>Friends loaded: {friends.length}</p>
+
 				}
 				
 			</div>
