@@ -10,11 +10,11 @@ both their frontend and backend capabilities.
 
 - Use an ORM for the database 1 pt OK
 
-- Standard user management and authentication. 2pts TO FINISH 
-◦ Users can update their profile information. OK
-◦ Users can upload an avatar (with a default avatar if none provided).
-◦ Users can add other users as friends and see their online status. 
-◦ Users have a profile page displaying their information OK
+- Standard user management and authentication. 2pts OK 
+◦ Users can update their profile information. 
+◦ Users can upload an avatar (with a default avatar if none provided).  
+◦ Users can add other users as friends and see their online status.  
+◦ Users have a profile page displaying their information 
 
 - An organization system: 2pts
 ◦ Create, edit, and delete organizations.

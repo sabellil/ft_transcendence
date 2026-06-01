@@ -13,6 +13,10 @@ function App()
 
 	const [token, setToken] =
 		useState("");
+
+	const [profile, setProfile] =
+		useState<any>(null);
+	
   
   //fonction qui s'execute au clic du bouton de login
 	async function login()
@@ -38,6 +42,20 @@ function App()
 			await response.json();
     //stocke le token de connexion recu du backend dans la variable d'etat token
 		setToken(data.token);
+		
+		const profileResponse =
+			await fetch(
+				"http://localhost:3000/api/users/me",
+				{
+					headers:
+					{
+						Authorization:
+						`Bearer ${data.token}`//envoie le token de connexion dans les headers pour acceder au profil du user
+					}
+				}
+			);
+		const profileData = await profileResponse.json();
+		setProfile(profileData);
 	}
 
 	return (
@@ -57,6 +75,12 @@ function App()
       />
       <br/>
       <button onClick={login}>Login</button>
+      <p>
+        Token;
+      </p>
+      <p>
+        {token}
+      </p>
   </div>
 
 	);
