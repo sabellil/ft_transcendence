@@ -16,7 +16,7 @@ function App()
 
 	const [profile, setProfile] =
 		useState<any>(null);
-	
+
   
   //fonction qui s'execute au clic du bouton de login
 	async function login()
@@ -81,6 +81,18 @@ function App()
       <p>
         {token}
       </p>
+	  {
+		profile &&
+		(
+			<div>
+				<h2>Profile</h2>
+				<p>Username: {profile.username}</p>
+				<p>Email: {profile.email}</p>
+				<p>Online: {String(profile.isOnline)}</p>
+				<p>Avatar: {profile.avatar}</p>
+			</div>
+		)
+	  }
   </div>
 
 	);
