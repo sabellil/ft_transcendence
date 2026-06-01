@@ -16,6 +16,9 @@ function App()
 
 	const [profile, setProfile] =
 		useState<any>(null);
+	
+	const [friends, setFriends] =
+		useState<any[]>([]);
 
   
   //fonction qui s'execute au clic du bouton de login
@@ -56,7 +59,21 @@ function App()
 			);
 		const profileData = await profileResponse.json();
 		setProfile(profileData);
-	}
+
+		const friendsResponse =
+			await fetch(
+				"http://localhost:3000/api/friends",
+				{
+					headers:
+					{
+						Authorization:
+						`Bearer ${data.token}}`
+					}
+				}
+			);
+			const friendsData = await friendsResponse.json();
+			setFriends(friendsData);
+		}
 	if (profile)
 		{
 			return (
@@ -66,10 +83,21 @@ function App()
 				<p>Email: {profile.email}</p>
 				<p>Online: {String(profile.isOnline)}</p>
 				<p>Avatar: {profile.avatar}</p>
+
+				<h2>Friends</h2>
+				{
+					friends.map((friend:any) => (
+						<div key={friend.id} >
+							{friend.username}
+							- Online: {String(friend.isOnline)}
+						</div>
+					))
+				}
+				
 			</div>
 			)
 		}
-		
+
 	return (
 		//Need to ecrire du html React ici ! affichage de la page, formulaire de login
   <div>
