@@ -57,7 +57,19 @@ function App()
 		const profileData = await profileResponse.json();
 		setProfile(profileData);
 	}
-
+	if (profile)
+		{
+			return (
+			<div>
+				<h2>Profile</h2>
+				<p>Username: {profile.username}</p>
+				<p>Email: {profile.email}</p>
+				<p>Online: {String(profile.isOnline)}</p>
+				<p>Avatar: {profile.avatar}</p>
+			</div>
+			)
+		}
+		
 	return (
 		//Need to ecrire du html React ici ! affichage de la page, formulaire de login
   <div>
@@ -82,16 +94,7 @@ function App()
         {token}
       </p>
 	  {
-		profile &&
-		(
-			<div>
-				<h2>Profile</h2>
-				<p>Username: {profile.username}</p>
-				<p>Email: {profile.email}</p>
-				<p>Online: {String(profile.isOnline)}</p>
-				<p>Avatar: {profile.avatar}</p>
-			</div>
-		)
+		
 	  }
   </div>
 
