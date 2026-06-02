@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 //composant principal React qui decrit ce que la page doit afficher
 function App()
 {
-  //declaration de 3 variables d'etat pour stocker les donnees du formulaire et le token de connexion
+  //declaration de 4 variables d'etat pour stocker les donnees du formulaire et le token de connexion
 	const [email, setEmail] =
 		useState("");
 
