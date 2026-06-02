@@ -15,3 +15,15 @@ async function orgRoutes(app, options)
 export default orgRoutes;
 
 //organisations
+/*
+
+An organization system:
+◦ Create, edit, and delete organizations.
+◦ Add users to organizations.
+◦ Remove users from organizations.
+◦ View organizations and allow users to perform specific actions within an or-
+ganization (minimum: create, read, update)
+
+
+
+*/
