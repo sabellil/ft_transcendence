@@ -15,10 +15,31 @@ function App()
 		useState("");
 
 	const [profile, setProfile] =
-		useState<any>(null);
+		useState<any>(null);//aucue donnee
+
+/*
+A l'avenir
+Un type par objet metier
+Plusieurs pages peuvent utiliser le meme type
+type User =
+{
+	id:number;
+	email:string;
+	username:string;
+	isOnline:boolean;
+	avatar:string;
+};
+
+const [profile, setProfile] =
+	useState<User | null>(null);
+
+	
+
+
+*/
 	
 	const [friends, setFriends] =
-		useState<any[]>([]);
+		useState<any[]>([]);//liste vide atm
 
   
   //fonction qui s'execute au clic du bouton de login
