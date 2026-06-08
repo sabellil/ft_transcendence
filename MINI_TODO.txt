@@ -54,3 +54,8 @@ etc.).
 - User activity analytics and insights dashboard. 1pt
 
 - Implement remote authentication with OAuth 2.0 (Google, GitHub, 42, etc.). 1pt
+
+
+SARA, side todo: 
+- Penser a mettre en place la suppression en cascade pour les users (cf conv Gab et Pauline)
+- Mettre en place UID pour remplacer simple ID en incrementation

@@ -38,3 +38,18 @@ export async function deleteOrganization(
 		where: { id }
 	});	
 }
+
+export async function addUserToOrganization(
+	organizationId: number,
+	userId: number
+)
+{
+	return await prisma.organization.create({
+		data:
+		{
+			organizationId,
+			userId
+			role:"member"
+		}
+	});
+}
