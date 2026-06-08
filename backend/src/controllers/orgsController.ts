@@ -19,6 +19,15 @@ export async function getOrganizations()
     return await prisma.organization.findMany();//recup toutes les lignes de la table Organization
 }
 
+export async function getOrganizationById(
+	id: number
+)
+{
+	return await prisma.organization.findUnique({//recup une ligne de la table Organization selon son id
+		where: { id }
+	});
+}
+
 export async function udpateOrganization(
 	id: number,
 	name: string
