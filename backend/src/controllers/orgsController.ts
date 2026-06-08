@@ -53,3 +53,17 @@ export async function addUserToOrganization(
 		}
 	});
 }
+
+export async function removeUserFromOrganization(
+	organizationId:number,
+	userId:number
+)
+{
+	return await prisma.organizationMember.deleteMany({
+		where:
+		{
+			organizationId,
+			userId
+		}
+	});
+}

@@ -1,4 +1,4 @@
-import { createOrganization, getOrganizations, udpateOrganization, deleteOrganization, addUserToOrganization } from "../controllers/orgsController.js";
+import { createOrganization, getOrganizations, udpateOrganization, deleteOrganization, addUserToOrganization, removeUserFromOrganization } from "../controllers/orgsController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 
@@ -47,9 +47,19 @@ async function orgRoutes(app, options) {
       return await addUserToOrganization(Number(id), Number(userId));
     }
   );
+  app.delete(
+	  "/:id/users/:userId",
+	  async (request, reply) => {
+		  const { id, userId } =  request.params as {
+			id:string;
+			userId:string;
+		};
+		return await removeUserFromOrganization(Number(id), Number(userId));
+	  }
+  );
 }
 
-    export default orgRoutes;
+export default orgRoutes;
 
 //organisations
 /*
