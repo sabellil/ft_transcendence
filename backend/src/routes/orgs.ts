@@ -1,4 +1,4 @@
-import { createOrganization, getOrganizations} from "../controllers/orgsController.js";
+import { createOrganization, getOrganizations, udpateOrganization } from "../controllers/orgsController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 async function orgRoutes(app, options) {
@@ -10,15 +10,24 @@ async function orgRoutes(app, options) {
   });
   app.post("/", async (request, reply) => {
     const user = request.user as {
-      id: number;
+      id:number;
     };
     const { name } = request.body as {
-      name: string;
+      name:string;
     };
     return await createOrganization(name, user.id);
   });
   app.get("/", async (request, reply) => {
     return await getOrganizations();
+  });
+  app.put("/:id", async (request, reply) => {
+    const { id } = request.params as {
+      id:string;
+    };
+    const { name } = request.body as {
+      name:string;
+    };
+    return await udpateOrganization(Number(id), name);
   });
 }
 
