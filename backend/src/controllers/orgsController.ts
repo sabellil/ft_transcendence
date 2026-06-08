@@ -14,7 +14,18 @@ export async function createOrganization(
 	});
 }
 
-export async function getOrganization()
+export async function getOrganizations()
 {
-    return await prisma.organization.findMany();
+    return await prisma.organization.findMany();//recup toutes les lignes de la table Organization
+}
+
+export async function udpateOrganization(
+	id: number,
+	name: string
+)
+{
+	return await prisma.organization.update({
+		where: { id },
+		data: { name }
+	});	
 }
