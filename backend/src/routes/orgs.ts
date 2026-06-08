@@ -1,4 +1,4 @@
-import { createOrganization } from "../controllers/orgsController.ts";
+import { createOrganization } from "../controllers/orgsController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 async function orgRoutes(app, options) {
