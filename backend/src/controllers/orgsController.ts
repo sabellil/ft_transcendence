@@ -44,11 +44,11 @@ export async function addUserToOrganization(
 	userId: number
 )
 {
-	return await prisma.organization.create({
+	return await prisma.organizationMember.create({
 		data:
 		{
 			organizationId,
-			userId
+			userId,
 			role:"member"
 		}
 	});
