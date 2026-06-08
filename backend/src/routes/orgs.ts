@@ -1,4 +1,4 @@
-import { createOrganization } from "../controllers/orgsController.js";
+import { createOrganization, getOrganization} from "../controllers/orgsController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 async function orgRoutes(app, options) {
@@ -17,9 +17,14 @@ async function orgRoutes(app, options) {
     };
     return await createOrganization(name, user.id);
   });
+  app.get("/", async (request, reply) => {
+    return await getOrganization();
+  });
 }
 
-export default orgRoutes;
+
+
+    export default orgRoutes;
 
 //organisations
 /*

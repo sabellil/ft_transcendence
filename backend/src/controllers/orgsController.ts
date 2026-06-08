@@ -13,3 +13,8 @@ export async function createOrganization(
 		}
 	});
 }
+
+export async function getOrganization()
+{
+    return await prisma.organization.findMany();
+}
