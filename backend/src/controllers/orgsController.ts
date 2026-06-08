@@ -1,0 +1,15 @@
+import prisma from "../lib/prisma.ts";
+
+export async function createOrganization(
+	name: string,
+	ownerId: number
+)
+{
+	return await prisma.organization.create({
+		data:
+		{
+			name,
+			ownerId
+		}
+	});
+}

@@ -1,15 +1,22 @@
-import { 
-    authMiddleware 
-} from "../middleware/authMiddleware.js";
-async function orgRoutes(app, options)
-{
-    app.addHook("preHandler", authMiddleware);//middleware pour auth avant chaque route, sinon error 401 unauthorized
-    app.get("/test", async (request, reply) =>
-    {
-        return {
-            message: "Organizations route works"
-        };
-    });
+import { createOrganization } from "../controllers/orgsController.ts";
+import { authMiddleware } from "../middleware/authMiddleware.js";
+
+async function orgRoutes(app, options) {
+  app.addHook("preHandler", authMiddleware); //middleware pour auth avant chaque route, sinon error 401 unauthorized
+  app.get("/test", async (request, reply) => {
+    return {
+      message: "Organizations route works",
+    };
+  });
+  app.post("/", async (request, reply) => {
+    const user = request.user as {
+      id: number;
+    };
+    const { name } = request.body as {
+      name: string;
+    };
+    return await createOrganization(name, user.id);
+  });
 }
 
 export default orgRoutes;
