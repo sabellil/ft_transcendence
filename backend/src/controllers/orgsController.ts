@@ -1,11 +1,11 @@
-import prisma from "../lib/prisma.js";
+import prisma from "../lib/prisma.js";//import de prisma pour parler a la bdd
 
 export async function createOrganization(
 	name: string,
 	ownerId: number
 )
 {
-	return await prisma.organization.create({
+	return await prisma.organization.create({//demande a prisma d'ajouteer une ligne dans la table Organization
 		data:
 		{
 			name,
@@ -27,5 +27,14 @@ export async function udpateOrganization(
 	return await prisma.organization.update({
 		where: { id },
 		data: { name }
+	});	
+}
+
+export async function deleteOrganization(
+	id: number
+)
+{
+	return await prisma.organization.delete({
+		where: { id }
 	});	
 }
