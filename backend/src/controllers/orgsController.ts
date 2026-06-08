@@ -44,6 +44,16 @@ export async function addUserToOrganization(
 	userId: number
 )
 {
+	const existingMember = await prisma.organizationMember.findFirst({
+		where:
+		{
+			organizationId,
+			userId
+		}
+	});
+	if (existingMember) {
+		throw new Error("User already a member of this organization");
+	}
 	return await prisma.organizationMember.create({
 		data:
 		{
