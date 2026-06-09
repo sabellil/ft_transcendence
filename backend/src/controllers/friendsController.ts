@@ -109,6 +109,34 @@ export async function acceptFriend(
 	});
 }
 
+export async function refuseFriend(
+	friendshipId: number,
+	userId: number
+)
+{
+	const friendship = await prisma.friendship.findUnique({
+		where:
+		{
+			id: friendshipId
+		}
+	});
+
+	if (!friendship || friendship.receiverId !== userId)//pas refuser de demande inexistante ou demande qui en ne nous est pas adressee
+	{
+		throw new Error("Friendship not found or not authorized");
+	}
+	return await prisma.friendship.update({
+		where:
+		{
+			id: friendshipId
+		},
+		data:
+		{
+			status: "refused"
+		}
+	});
+}
+
 export async function removeFriend(
 	friendshipId:number
 )
