@@ -33,7 +33,8 @@ etc.).
 - Allow users to interact with other users. The minimum requirements are: 2pts
 ◦ A basic chat system (send/receive messages between users).
 ◦ A profile system (view user information). OK 
-◦ A friends system (add/remove friends, see friends list). OK
+◦ A friends system (add/remove friends, see friends list). OK 
+En + : refuser ami
 
 - Advanced permissions system: 2pts
 ◦ View, edit, and delete users (CRUD).
@@ -60,6 +61,7 @@ SARA, side todo:
 - Penser a mettre en place la suppression en cascade pour les users (cf conv Gab et Pauline)
   - Pour gerer suppression de compte : on vire profile, ami etc 
 - Mettre en place UID pour remplacer simple ID en incrementation
+- Limiter nb d'org par user?
 
 A regler: 
 - normal de pouvoir se login plsuieurs fois en curl ?

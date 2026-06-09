@@ -32,13 +32,17 @@ async function orgRoutes(app, options) {
 	}
 );
   app.put("/:id", async (request, reply) => {
+    const user = request.user as {
+      id:number;
+
+    };
     const { id } = request.params as {
       id:string;
     };
     const { name } = request.body as {
       name:string;
     };
-    return await udpateOrganization(Number(id), name);
+    return await udpateOrganization(Number(id), name, user.id);
   });
   app.delete("/:id", async (request, reply) => {
     const { id } = request.params as {

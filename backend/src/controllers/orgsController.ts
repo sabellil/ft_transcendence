@@ -30,9 +30,21 @@ export async function getOrganizationById(
 
 export async function udpateOrganization(
 	id: number,
-	name: string
+	name: string,
+	requesterId: number
 )
 {
+	const organization = await prisma.organization.findUnique({
+		where: { id }
+	});
+	if (!organization)
+	{
+		throw new Error("Organization not found");
+	}
+	if (organization.ownerId !== requesterId)
+	{
+		throw new Error("Only the owner can update the organization");
+	}
 	return await prisma.organization.update({
 		where: { id },
 		data: { name }
