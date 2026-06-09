@@ -97,6 +97,10 @@ export async function acceptFriend(
 	{
 		throw new Error("Friendship not found or not authorized");
 	}
+	if (friendship.status !== "pending")
+	{
+		throw new Error("Friendship is no longer pending");
+	}
 	return await prisma.friendship.update({
 		where:
 		{
@@ -124,6 +128,10 @@ export async function refuseFriend(
 	if (!friendship || friendship.receiverId !== userId)//pas refuser de demande inexistante ou demande qui en ne nous est pas adressee
 	{
 		throw new Error("Friendship not found or not authorized");
+	}
+	if (friendship.status !== "pending")
+	{
+		throw new Error("Friendship is no longer pending");
 	}
 	return await prisma.friendship.update({
 		where:
