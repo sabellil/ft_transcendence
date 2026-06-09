@@ -21,10 +21,7 @@ async function usersRoutes(app: FastifyInstance, options)
             message: "Users route works"
         };
     });
-    app.get(
-		"/me",
-		async (request, reply) =>
-		{
+	app.get("/me", async (request, reply) => {
 			const user =
 				request.user as {
 					id:number
@@ -34,10 +31,7 @@ async function usersRoutes(app: FastifyInstance, options)
 				user.id
 			);
 		});
-	app.put(
-		"/me",
-		async (request, reply) =>
-		{
+	app.put("/me", async (request, reply) => {
 			const user =
 				request.user as {
 					id:number
@@ -55,23 +49,17 @@ async function usersRoutes(app: FastifyInstance, options)
 				username
 			);
 		});
-	app.post(
-	"/avatar",
-	async (request, reply) =>
-	{
+	app.post("/avatar", async (request, reply) => {
 		const data =
 			await request.file();
-
 		if (!data)
 		{
 			return reply.status(400).send({
 				error:"No file"
 			});
 		}
-
 		const user =
 			request.user;
-
 		const fileName =
 			`${user.id}-${data.filename}`;
 

@@ -59,4 +59,9 @@ etc.).
 SARA, side todo: 
 - Verifier qu'on ne peut pas se re login si on est deja login, peut ajouter 2 fois la meme personne en ami
 - Penser a mettre en place la suppression en cascade pour les users (cf conv Gab et Pauline)
+  - Pour gerer suppression de compte : on vire profile, ami etc 
 - Mettre en place UID pour remplacer simple ID en incrementation
+
+A regler: 
+- On peut envoyer plusieurs fois la meme demande d'ami
+- On peut envoyer une demande d'ami meme deconnecte 

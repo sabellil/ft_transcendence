@@ -19,9 +19,7 @@ from "../middleware/authMiddleware.js";
 {
 	app.addSchema(authTestParamsSchema);
 
-	app.get(
-		"/",
-		async (
+	app.get("/", async (
 			request: FastifyRequest,
 			reply
 		) =>
@@ -59,7 +57,7 @@ from "../middleware/authMiddleware.js";
 	);
 
 	app.get(
-		"/:id/avatar",
+"/:id/avatar",
 		{
 			schema:
 			{
@@ -92,10 +90,7 @@ from "../middleware/authMiddleware.js";
 		}
 	);
 
-	app.post(
-		"/register",
-		async (request, reply) =>
-		{
+	app.post("/register", async (request, reply) => {
 			const {
 				email,
 				username,
@@ -126,8 +121,7 @@ from "../middleware/authMiddleware.js";
 
 	app.post(
 		"/login",
-		async (request, reply) =>
-		{
+		async (request, reply) => {
 			const {
 				email,
 				password

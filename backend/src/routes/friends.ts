@@ -22,10 +22,7 @@ async function friendsRoutes(app, options)//option eventuelles config ou plugins
             message: "Friends route works"
         };
     });
-    app.get(
-	"/",
-	async (request, reply) =>
-	{
+    app.get("/", async (request, reply) => {
 		const user =
 			request.user as {
 				id:number
@@ -38,10 +35,7 @@ async function friendsRoutes(app, options)//option eventuelles config ou plugins
 
 		return friends;
 	});
-    app.post(
-	"/add/:id",
-	async (request, reply) =>
-	{
+    app.post("/add/:id", async (request, reply) => {
 		const user =
 			request.user as {
 				id:number
@@ -62,23 +56,19 @@ async function friendsRoutes(app, options)//option eventuelles config ou plugins
 
 		return friend;
 	});
-    app.get(
-	"/pending",
-	async (request, reply) =>
-	{
+    app.get("/pending", async (request, reply) => {
 		const user =
 			request.user as {
 				id:number
 			};
-
 		return await getPendingFriends(
 			user.id
 		);
 	});
-	app.post(
-	"/accept/:id",
-	async (request, reply) =>
-	{
+	app.post("/accept/:id", async (request, reply) => {	
+		const user = request.user as {
+			id:number
+		};
 		const {
 			id
 		} =
@@ -87,13 +77,11 @@ async function friendsRoutes(app, options)//option eventuelles config ou plugins
 		};
 
 		return await acceptFriend(
-			Number(id)
+			Number(id),
+			user.id
 		);
 	});
-	app.delete(
-	"/:id",
-	async (request, reply) =>
-	{
+	app.delete("/:id", async (request, reply) => {
 		const {
 			id
 		} =
