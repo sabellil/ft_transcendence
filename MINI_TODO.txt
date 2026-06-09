@@ -57,5 +57,6 @@ etc.).
 
 
 SARA, side todo: 
+- Verifier qu'on ne peut pas se re login si on est deja login, peut ajouter 2 fois la meme personne en ami
 - Penser a mettre en place la suppression en cascade pour les users (cf conv Gab et Pauline)
 - Mettre en place UID pour remplacer simple ID en incrementation

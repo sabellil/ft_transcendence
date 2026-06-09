@@ -1,4 +1,4 @@
-import { createOrganization, getOrganizations, udpateOrganization, deleteOrganization, addUserToOrganization, removeUserFromOrganization } from "../controllers/orgsController.js";
+import { createOrganization, getOrganizations, getOrganizationById, udpateOrganization, deleteOrganization, addUserToOrganization, removeUserFromOrganization } from "../controllers/orgsController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 
@@ -22,6 +22,15 @@ async function orgRoutes(app, options) {
   app.get("/", async (request, reply) => {//voir toutes les orgs 
     return await getOrganizations();
   });
+  app.get("/:id", async (request, reply) => {
+		const { id } = request.params as {
+			id:string;
+		};
+		return await getOrganizationById(
+			Number(id)
+		);
+	}
+);
   app.put("/:id", async (request, reply) => {
     const { id } = request.params as {
       id:string;
