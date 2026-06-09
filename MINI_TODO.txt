@@ -62,3 +62,4 @@ SARA, side todo:
 - Mettre en place UID pour remplacer simple ID en incrementation
 
 A regler: 
+- normal de pouvoir se login plsuieurs fois en curl ?

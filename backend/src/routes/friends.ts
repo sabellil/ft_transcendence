@@ -7,6 +7,7 @@ import {
 	addFriend,
     getPendingFriends,
 	acceptFriend,
+	refuseFriend,
 	removeFriend
 }
 from "../controllers/friendsController.js";
@@ -77,6 +78,22 @@ async function friendsRoutes(app, options)//option eventuelles config ou plugins
 		};
 
 		return await acceptFriend(
+			Number(id),
+			user.id
+		);
+	});
+	app.post("/refuse/:id", async (request, reply) => {
+		const user = request.user as {
+			id:number
+		};
+		const {
+			id
+		} =
+		request.params as {
+			id:string
+		};
+
+		return await refuseFriend(
 			Number(id),
 			user.id
 		);
