@@ -29,6 +29,34 @@ export async function addFriend(
 	receiverId: number
 )
 {
+	if (senderId === receiverId)
+	{
+		throw new Error("You cannot add yourself as a friend");
+	}
+
+	const existingFriendship =
+		await prisma.friendship.findFirst({
+			where:
+			{
+				OR:
+				[
+					{
+						senderId,
+						receiverId
+					},
+					{
+						senderId: receiverId,
+						receiverId: senderId
+					}
+				]
+			}
+		});
+
+	if (existingFriendship)
+	{
+		throw new Error("Friendship already exists or you already have a pending invite from this user");
+	}
+
 	return await prisma.friendship.create({
 		data:
 		{
@@ -53,9 +81,26 @@ export async function getPendingFriends(
 }
 
 export async function acceptFriend(
-	friendshipId: number
+	friendshipId: number,
+	userId: number
 )
 {
+	const friendship =
+		await prisma.friendship.findUnique({
+			where:
+			{
+				id: friendshipId
+			}
+		});
+
+	if (!friendship || friendship.receiverId !== userId)//pas accepter de demande inexistante ou demande qui en ne nous est pas adressee
+	{
+		throw new Error("Friendship not found or not authorized");
+	}
+	if (friendship.status !== "pending")
+	{
+		throw new Error("Friendship is no longer pending");
+	}
 	return await prisma.friendship.update({
 		where:
 		{
@@ -64,6 +109,38 @@ export async function acceptFriend(
 		data:
 		{
 			status: "accepted"
+		}
+	});
+}
+
+export async function refuseFriend(
+	friendshipId: number,
+	userId: number
+)
+{
+	const friendship = await prisma.friendship.findUnique({
+		where:
+		{
+			id: friendshipId
+		}
+	});
+
+	if (!friendship || friendship.receiverId !== userId)//pas refuser de demande inexistante ou demande qui en ne nous est pas adressee
+	{
+		throw new Error("Friendship not found or not authorized");
+	}
+	if (friendship.status !== "pending")
+	{
+		throw new Error("Friendship is no longer pending");
+	}
+	return await prisma.friendship.update({
+		where:
+		{
+			id: friendshipId
+		},
+		data:
+		{
+			status: "refused"
 		}
 	});
 }
