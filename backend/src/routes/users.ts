@@ -1,11 +1,8 @@
-import {
-    authMiddleware 
-} from "../middleware/authMiddleware.js";
-
+import { authMiddleware } from "../middleware/authMiddleware.js";
 import type { FastifyInstance } from "fastify";
-
 import fs from "fs";
 import path from "path";
+import prisma from "../lib/prisma.js";
 
 import {
     getMe, 
@@ -76,7 +73,16 @@ async function usersRoutes(app: FastifyInstance, options)
 			filePath,
 			buffer
 		);
-
+		await prisma.user.update({
+			where:
+			{
+				id:user.id
+			},
+			data:
+			{
+				avatar: "/" +filePath
+			}
+		});
 		return {
 			message:"Avatar uploaded",
 			path:filePath

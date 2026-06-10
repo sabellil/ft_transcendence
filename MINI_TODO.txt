@@ -17,7 +17,7 @@ etc.).
 ◦ Users have a profile page displaying their information 
 
 - An organization system: 2pts
-◦ Create, edit, and delete organizations. OK
+◦ Create, edit, and delete organizations. 
 ◦ Add users to organizations.
 ◦ Remove users from organizations.
 ◦ View organizations and allow users to perform specific actions within an
