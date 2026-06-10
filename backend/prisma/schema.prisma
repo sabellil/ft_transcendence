@@ -28,6 +28,9 @@ model User {
 
   ownedOrganizations Organization[]
   organizations      OrganizationMember[]
+  friendCode String?
+  ingameName String?
+  bio        String?
 }
 
 model Friendship {
