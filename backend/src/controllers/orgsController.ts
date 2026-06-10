@@ -52,19 +52,53 @@ export async function udpateOrganization(
 }
 
 export async function deleteOrganization(
-	id: number
+	id:number,
+	requesterId:number
 )
 {
+	const organization =
+		await prisma.organization.findUnique({
+			where:
+			{
+				id
+			}
+		});
+
+	if (!organization)
+	{
+		throw new Error("Organization not found");
+	}
+
+	if (organization.ownerId !== requesterId)
+	{
+		throw new Error("Only the owner can delete this organization");
+	}
+
 	return await prisma.organization.delete({
-		where: { id }
-	});	
+		where:
+		{
+			id
+		}
+	});
 }
 
 export async function addUserToOrganization(
 	organizationId: number,
-	userId: number
+	userId: number,
+	requesterId: number
 )
 {
+	const organization = await prisma.organization.findUnique({
+		where: { id: organizationId }
+	});
+	if (!organization)
+	{
+		throw new Error("Organization not found");
+	}
+	if (organization.ownerId !== requesterId)
+	{
+		throw new Error("Only the owner can add users to the organization");
+	}
 	const existingMember = await prisma.organizationMember.findFirst({
 		where:
 		{
@@ -87,9 +121,28 @@ export async function addUserToOrganization(
 
 export async function removeUserFromOrganization(
 	organizationId:number,
-	userId:number
+	userId:number,
+	requesterId:number
 )
 {
+	const organization =
+		await prisma.organization.findUnique({
+			where:
+			{
+				id: organizationId
+			}
+		});
+
+	if (!organization)
+	{
+		throw new Error("Organization not found");
+	}
+
+	if (organization.ownerId !== requesterId)
+	{
+		throw new Error("Only the owner can remove members");
+	}
+
 	return await prisma.organizationMember.deleteMany({
 		where:
 		{

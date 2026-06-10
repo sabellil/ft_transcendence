@@ -29,8 +29,7 @@ async function orgRoutes(app, options) {
 		return await getOrganizationById(
 			Number(id)
 		);
-	}
-);
+	});
   app.put("/:id", async (request, reply) => {
     const user = request.user as {
       id:number;
@@ -45,31 +44,34 @@ async function orgRoutes(app, options) {
     return await udpateOrganization(Number(id), name, user.id);
   });
   app.delete("/:id", async (request, reply) => {
+	  const user = request.user as {
+		  id:number;
+	  };
     const { id } = request.params as {
-      id:string;
-    };
-    return await deleteOrganization(Number(id));
+		  id:string;
+	  };
+    return await deleteOrganization(Number(id), user.id);
   });
-  app.post(
-    "/:id/users/:userId",
-    async (request, reply) => {
-      const { id, userId } = request.params as {
-        id:string;
-        userId:string;
-      };
-      return await addUserToOrganization(Number(id), Number(userId));
-    }
-  );
-  app.delete(
-	  "/:id/users/:userId",
-	  async (request, reply) => {
-		  const { id, userId } =  request.params as {
+  app.post("/:id/users/:userId", async (request, reply) => {
+    const user = request.user as {
+      id:number;
+		};
+		const { id, userId } = request.params as {
 			id:string;
 			userId:string;
 		};
-		return await removeUserFromOrganization(Number(id), Number(userId));
-	  }
-  );
+		return await addUserToOrganization(Number(id), Number(userId), user.id);
+	});
+  app.delete("/:id/users/:userId", async (request, reply) => {
+    const user = request.user as {
+			id:number;
+		};
+    const { id, userId } = request.params as {
+			id:string;
+			userId:string;
+		};
+    return await removeUserFromOrganization(Number(id), Number(userId), user.id);
+	});
 }
 
 export default orgRoutes;
