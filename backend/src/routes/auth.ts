@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { authTestParams } from "../schema/auth/exemple.ts";
 import authTestParamsSchema from "../schema/auth/exemple.ts";
+import prisma from "../lib/prisma.js";
 
 import {
 	registerUser,
@@ -30,9 +31,7 @@ from "../middleware/authMiddleware.js";
 		}
 	);
 
-	app.get(
-		"/:id",
-		{
+	app.get("/:id",{
 			schema:
 			{
 				params:
@@ -56,9 +55,7 @@ from "../middleware/authMiddleware.js";
 		}
 	);
 
-	app.get(
-"/:id/avatar",
-		{
+	app.get("/:id/avatar", {
 			schema:
 			{
 				params:
@@ -119,37 +116,44 @@ from "../middleware/authMiddleware.js";
 		}
 	);
 
-	app.post(
-		"/login",
-		async (request, reply) => {
-			const {
+	app.post("/login", async (request, reply) => {
+		const {
+			email,
+			password
+		} =
+		request.body as {
+			email: string;
+			password: string;
+		};
+		const token = await loginUser(
 				email,
 				password
-			} =
-			request.body as {
-				email: string;
-				password: string;
-			};
+		);
+		return {
+			token
+		};
+	}
+);
 
-			const token =
-				await loginUser(
-					email,
-					password
-				);
-
-			return {
-				token
-			};
-		}
-	);
-
-	app.post(
-		"/logout",
-		{
+	app.post("/logout", {
 			preHandler: authMiddleware
 		},
 		async (request, reply) =>
 		{
+			const user = request.user as {
+				id: number;
+			};
+
+			await prisma.user.update({
+				where:
+				{
+					id: user.id
+				},
+				data:
+				{
+					isOnline: false
+				}
+			});
 			return {
 				message:
 				"Logout successful"
