@@ -23,13 +23,13 @@ where: Prisma.UserWhereUniqueInput,
 		where,
 		select: { id: true, username: true, messageIds: true, usershipIds: true,},
 	});
-	
+
 	if (!user) { throw new Error("error.userNotFound");}
 	return user;
 }
 
 // checkAreFriends - Verify that boths ussers are friends before accessing chat
-async function checkAreFriends(username: string, friendUsername: string) {
+async function checkAreFriends(username: string, friendUsername: string){
 	const friend = await lookupUser(friendUsername);
 	const me = await loadUsershipUser({ username });
 	const row = await findUsershipRow(me, friend.id, UsershipStatus.Friend);
@@ -39,7 +39,21 @@ async function checkAreFriends(username: string, friendUsername: string) {
 }
 
 // getCOnversation - Fetch all shared messages between two friends
-async function getConversation{
+async function getConversation(username: string, friendUsername: string, limit?: number, offset?: number,){
+	const friend = await checkAreFriends(username, friendUsername);
+	const me = await loadMessageUser({ username });
+	const friendData = await loadMessageUser({ id: friend.id });
+	const sharedMessageIds = me.messageIds.filter(id => friendData.messageIds.includes(id));
+
+	if (!sharedMessageIds.length) {
+		return [];
+	}
+	return prisma.message.findMany({
+		where: { id: { in: sharedMessageIds } },
+		orderBy: { time: "asc" },
+		take: limit,
+		skip: offset,
+	});
 
 }
 
