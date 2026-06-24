@@ -173,7 +173,9 @@ model CardshipExchange {
 model Message {
   id                   Int              @id @default(autoincrement())
 
+
   userId               Int
   content              String
   time                 DateTime         @default(now())
 }
+

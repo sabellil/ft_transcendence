@@ -54,6 +54,7 @@ import guildsRoutes  from "./engine/guilds.ts";
 
 import cardsRoutes   from "./engine/cards.ts";
 
+import messagesRoutes from "./engine/message.ts";
 
 
 
@@ -142,6 +143,7 @@ export async function createApp(httpsOpts: { key: Buffer; cert: Buffer }) {
 		await scope.register(blocksRoutes,  { prefix: "/api/block"  });
 		await scope.register(guildsRoutes,  { prefix: "/api/guild"  });
 		await scope.register(cardsRoutes,   { prefix: "/api/card"   });
+		await scope.register(messagesRoutes,   { prefix: "/api/message"  });
 	});
 
 

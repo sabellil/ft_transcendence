@@ -1,20 +1,43 @@
-import fs from "fs";
-
-
 import type { FastifyInstance } from "fastify";
 
 
 import type { Prisma } from "@prisma/client";
 
 
-import { requireAuth, requireAdmin, wrapHandler, validateMultipart, saveUploadedFile, validateBody } from "../middleware.ts";
-
-
-import { createCardSchema, editCardSchema } from "../validation.ts";
-
+import { requireAuth, wrapHandler } from "../middleware.ts";
 
 import { prisma, PAGINATION_DEFAULT, PAGINATION_MAX } from "../constants.ts";
 
+import { lookupUser } from "./users.ts";
+
+import { loadUsershipUser, findUsershipRow } from "./friends.ts";
+
+import { UsershipStatus } from "@prisma/client";
+
+
+async function loadMessageUser{
+
+}
+
+async function checkAreFriends{
+
+}
+
+async function getConversation{
+
+}
+
+async function createMessage{
+
+}
+
+async function messagesRoutes{
+
+}
+
+
+
+export default messagesRoutes;
 
 
 
