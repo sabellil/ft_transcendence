@@ -23,13 +23,19 @@ where: Prisma.UserWhereUniqueInput,
 		where,
 		select: { id: true, username: true, messageIds: true, usershipIds: true,},
 	});
+	
 	if (!user) { throw new Error("error.userNotFound");}
 	return user;
 }
 
 // checkAreFriends - Verify that boths ussers are friends before accessing chat
-async function checkAreFriends{
+async function checkAreFriends(username: string, friendUsername: string) {
+	const friend = await lookupUser(friendUsername);
+	const me = await loadUsershipUser({ username });
+	const row = await findUsershipRow(me, friend.id, UsershipStatus.Friend);
 
+	if (!row) {throw new Error("error.notFriends");}
+	return friend;
 }
 
 // getCOnversation - Fetch all shared messages between two friends
