@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+
+
+/* ------------------------------------------------------------------ */
+/*  Enums                                                             */
+/* ------------------------------------------------------------------ */
+
+
+enum UserRole {
+  User
+  Moderator
+  Admin
+}
+
+enum UserStatus {
+  Online
+  Offline
+}
+
+
+
+
+enum UsershipStatus {
+  Pending
+  Requested
+  Friend
+  Blocked
+}
+
+
+
+
+enum GuildshipStatus {
+  UserRequest
+  OwnerRequest
+  User
+  Owner
+}
+
+
+
+
+enum CardRarity {
+  Common
+  Uncommon
+  Rare
+  Legendary
+}
+
+enum CardType {
+  None
+  Normal
+  Fire
+  Water
+  Electric
+  Grass
+  Ice
+  Fighting
+  Poison
+  Ground
+  Flying
+  Psychic
+  Bug
+  Rock
+  Ghost
+  Dragon
+}
+
+enum CardshipStatus {
+  Unpossessed
+  Possessed
+  Wanted
+  Available
+}
+
+enum CardshipExchangeStatus {
+  ExchangePending
+  ExchangeRequested
+}
+
+
+
+
+/* ------------------------------------------------------------------ */
+/*  Models                                                            */
+/* ------------------------------------------------------------------ */
+
+
+model User {
+  id                  Int               @id @default(autoincrement())
+
+  email               String            @unique
+  username            String            @unique
+  password            String
+  avatar              String            @default("")
+  status              UserStatus        @default(Offline)
+  role                UserRole          @default(User)
+  language            String            @default("en")
+
+  usershipIds         Int[]             @default([])
+  cardshipIds         Int[]             @default([])
+  cardshipExchangeIds Int[]             @default([])
+  messageIds          Int[]             @default([])
+}
+
+model Usership {
+  id                   Int              @id @default(autoincrement())
+
+  userId               Int
+  status               UsershipStatus
+}
+
+
+
+
+model Guild {
+  id                   Int              @id @default(autoincrement())
+
+  name                 String           @unique
+  banner               String           @default("")
+
+  guildshipIds         Int[]            @default([])
+}
+
+model Guildship {
+  id                   Int              @id @default(autoincrement())
+
+  userId               Int
+  status               GuildshipStatus
+}
+
+
+
+
+model Card {
+  id                   Int              @id @default(autoincrement())
+
+  name                 String           @unique
+  pokemon              String
+  rarity               CardRarity        @default(Common)
+  type                 CardType          @default(None)
+  subType              CardType          @default(None)
+  health               Int               @default(0)
+  image                String            @default("")
+}
+
+model Cardship {
+  id                   Int              @id @default(autoincrement())
+
+  cardId               Int
+  status               CardshipStatus
+}
+
+model CardshipExchange {
+  id                   Int              @id @default(autoincrement())
+
+  cardId               Int
+  userId               Int
+  status               CardshipExchangeStatus
+}
+
+
+
+
+model Message {
+  id                   Int              @id @default(autoincrement())
+
+  userId               Int
+  content              String
+  time                 DateTime         @default(now())
+}
