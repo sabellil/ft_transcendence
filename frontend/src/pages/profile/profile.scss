@@ -1,0 +1,202 @@
+// ---- tokens ----
+
+$primary: #b997ff;
+
+
+
+
+// ---- header ----
+
+.profile-title {
+	font-family: fantasy;
+	font-size: 1.6rem;
+	font-weight: 700;
+	color: #4a3f6b;
+	margin: 0 0 1rem;
+	border: 3px rgb(255, 0, 174) solid;
+
+}
+
+
+
+
+// ---- columns ----
+
+.profile-cols {
+	display: flex;
+	gap: 2.5rem;
+	border: 3px rgb(255, 230, 0) solid;
+}
+
+
+.profile-main {
+	flex: 1;
+	min-width: 0;
+	border: 3px rgb(0, 255, 195) solid;
+
+}
+
+
+.profile-side {
+	flex: 0 0 22rem;
+	min-width: 0;
+	border: 3px rgb(195, 0, 255) solid;
+
+}
+
+
+.profile-section {
+	font-family: fantasy;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #4a3f6b;
+	margin: 0 0 0.75rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 2px solid rgba(185, 151, 255, 0.3);
+	border: 3px rgb(0, 76, 255) solid;
+
+}
+
+
+
+
+// ---- avatar ----
+
+.profile-avatar {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+
+	img {
+		width: 128px;
+		height: 128px;
+		border-radius: 50%;
+		border: 3px solid $primary;
+		box-shadow: 0 4px 20px rgba(185, 151, 255, 0.25);
+		object-fit: cover;
+	}
+}
+
+
+
+
+// ---- fields ----
+
+.profile-field {
+	font-size: 1rem;
+	padding: 0.5rem 0;
+	color: #3d315b;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	strong {
+		min-width: 6rem;
+		font-weight: 600;
+	}
+
+	input {
+		padding: 0.3rem 0.5rem;
+		border: 2px solid $primary;
+		border-radius: 12px;
+		outline: none;
+	}
+}
+
+
+.profile-field-plain {
+	font-size: 1rem;
+	padding: 0.5rem 0;
+	color: #3d315b;
+	border: 3px red solid;
+
+
+	strong {
+		font-weight: 600;
+		margin-right: 0.5rem;
+	}
+}
+
+
+
+
+// ---- buttons ----
+
+.profile-btn {
+	margin-right: 0.5rem;
+	margin-top: 1rem;
+	padding: 0.5rem 1.5rem;
+	color: #fff;
+	background: $primary;
+	border: none;
+	border-radius: 12px;
+	font-weight: 600;
+	font-size: 0.9rem;
+}
+
+
+.profile-delete {
+	margin-top: 1rem;
+	padding: 0.5rem 1.5rem;
+	color: #e66;
+	background: none;
+	border: none;
+	font-weight: 600;
+	font-size: 0.9rem;
+}
+
+
+
+
+// ---- blocked users ----
+
+.block-bar {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
+
+	input {
+		flex: 1;
+		padding: 0.5rem;
+		border: 2px solid $primary;
+		border-radius: 12px;
+		outline: none;
+	}
+
+	button {
+		padding: 0.5rem 1rem;
+		color: #fff;
+		background: $primary;
+		border: none;
+		border-radius: 12px;
+		font-weight: 600;
+	}
+}
+
+
+.blocked-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.5rem 1rem;
+	margin-bottom: 0.25rem;
+	background: #fff;
+	border: 1px solid rgba(220, 200, 240, 0.4);
+	border-radius: 12px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+
+	span {
+		color: #3d315b;
+	}
+
+	button {
+		padding: 0.25rem 0.75rem;
+		color: #fff;
+		background: $primary;
+		border: none;
+		border-radius: 8px;
+		font-size: 0.85rem;
+	}
+}

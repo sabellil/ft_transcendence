@@ -1,0 +1,259 @@
+// ---- tokens ----
+
+$primary: #b997ff;
+
+
+
+
+// ---- header ----
+
+.guilds-title {
+	font-family: fantasy;
+	font-size: 1.6rem;
+	font-weight: 700;
+	color: #4a3f6b;
+	margin: 0 0 1rem;
+}
+
+
+
+
+// ---- create bar ----
+
+.guilds-create {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 1.5rem;
+
+	input {
+		flex: 1;
+		padding: 0.5rem;
+		border: 2px solid $primary;
+		border-radius: 12px;
+		outline: none;
+	}
+
+	button {
+		padding: 0.5rem 1.5rem;
+		color: #fff;
+		background: $primary;
+		border: none;
+		border-radius: 12px;
+		font-weight: 600;
+	}
+}
+
+
+
+
+// ---- columns ----
+
+.guilds-columns {
+	display: flex;
+	gap: 1.5rem;
+	overflow: hidden;
+}
+
+
+.guilds-col {
+	flex: 1;
+	min-width: 0;
+	overflow-y: auto;
+}
+
+
+.guilds-col-title {
+	font-family: fantasy;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #4a3f6b;
+	margin: 0 0 0.75rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 2px solid rgba(185, 151, 255, 0.3);
+}
+
+
+
+
+// ---- guild card ----
+
+.guild-card {
+	display: flex;
+	flex-direction: column;
+	padding: 1.5rem;
+	margin-bottom: 1rem;
+	gap: 0.75rem;
+	background: #fff;
+	border: 2px solid rgba(220, 200, 240, 0.5);
+	border-radius: 16px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+
+	img.banner {
+		width: 100%;
+		height: 8rem;
+		object-fit: cover;
+		border-radius: 12px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	}
+
+	.guild-name {
+		font-family: fantasy;
+		font-size: 1.3rem;
+		font-weight: 700;
+		color: #3d315b;
+	}
+}
+
+
+.guild-invite {
+	display: flex;
+	gap: 0.5rem;
+
+	input {
+		flex: 1;
+		padding: 0.4rem;
+		border: 2px solid $primary;
+		border-radius: 12px;
+		outline: none;
+		font-size: 0.9rem;
+	}
+}
+
+
+.guild-actions {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+
+
+
+// ---- buttons ----
+
+.pill-btn {
+	padding: 0.4rem 1.2rem;
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: #fff;
+	background: $primary;
+	border: none;
+	border-radius: 12px;
+
+	&:hover {
+		background: darken($primary, 8%);
+	}
+}
+
+
+.delete-btn {
+	padding: 0.4rem 1.2rem;
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: #e66;
+	background: none;
+	border: none;
+
+	&:hover {
+		background: rgba(255, 100, 100, 0.08);
+	}
+}
+
+
+
+
+// ---- tags ----
+
+.tag-wrap {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+
+.pending-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.25rem 0.75rem;
+	font-size: 0.85rem;
+	background: rgba(247, 235, 255, 0.7);
+	border: 1px solid rgba(185, 151, 255, 0.25);
+	border-radius: 12px;
+
+	button {
+		padding: 0;
+		background: none;
+		border: none;
+		font-size: 1rem;
+		cursor: pointer;
+
+		&:hover {
+			transform: scale(1.2);
+		}
+	}
+}
+
+
+.member-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.25rem 0.75rem;
+	font-size: 0.9rem;
+	background: #fff;
+	border: 1px solid rgba(185, 151, 255, 0.3);
+	border-radius: 12px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+	button {
+		padding: 0;
+		background: none;
+		border: none;
+		font-size: 0.9rem;
+		cursor: pointer;
+
+		&:hover {
+			transform: scale(1.2);
+		}
+	}
+}
+
+
+
+
+// ---- outgoing requests ----
+
+.outgoing-row {
+	display: flex;
+	align-items: center;
+	padding: 0.5rem 1rem;
+	margin-bottom: 0.5rem;
+	background: #fff;
+	border: 1px solid rgba(220, 200, 240, 0.4);
+	border-radius: 12px;
+
+	span {
+		flex: 1;
+		color: #5c4f82;
+		font-weight: 500;
+	}
+
+	button {
+		padding: 0.25rem 1rem;
+		font-size: 0.85rem;
+		color: #fff;
+		background: $primary;
+		border: none;
+		border-radius: 8px;
+	}
+}
+
+
+.edit-input {
+	padding: 0.4rem;
+	border: 2px solid $primary;
+	border-radius: 12px;
+	outline: none;
+	font-size: 0.9rem;
+}
