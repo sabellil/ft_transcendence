@@ -14,23 +14,28 @@ import { loadUsershipUser, findUsershipRow } from "./friends.ts";
 
 import { UsershipStatus } from "@prisma/client";
 
-
+// loadMessageUser - load user id + messageIds for chat operations
 async function loadMessageUser{
 
 }
 
+// checkAreFriends - Verify that boths ussers are friends before accessing chat
 async function checkAreFriends{
 
 }
 
+// getCOnversation - Fetch all shared messages between two friends
 async function getConversation{
 
 }
 
+// createMessage - Create a new message and attach it to both user
 async function createMessage{
 
 }
 
+
+// messageRoutes - register all chat endpoint with auth prehandler
 async function messagesRoutes{
 
 }
