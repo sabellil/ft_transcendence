@@ -1,0 +1,11 @@
+login
+login create account
+homepage
+profil
+see collection (bulle)
+messages (messages prives, amis)
+listes d amis (a gauches, online, offline, notifications ?)
+liste des organisations (nom de guilde)
+page de guilde
+mentions legales (nous tapez pas nintendo)
+panneau d admin (admins de guilde ?)

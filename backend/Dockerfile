@@ -1,22 +1,17 @@
-#image Docker deja prete
 FROM node:24-alpine
 
-#dossier de travail dans le conteneur
 WORKDIR /app
 
-#copie de package.json et package-lock.json dans le conteneur
-COPY package*.json ./
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 
-#installation des dependances Nodes (fastify, prisma etc) dans le conteneur
+COPY package*.json ./
 RUN npm install
 
-#copie de tout le backend dans le conteneur
 COPY . .
-
-#app backend ecoute sur le port 3000 a linterieur du conteneur
-EXPOSE 3000
 
 RUN npm run build
 
-#commandes executees autom. quand le conteneur demarre
+EXPOSE 3000
+
 CMD ["npm", "run", "start"]

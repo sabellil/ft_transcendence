@@ -2,12 +2,16 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+ARG APIBASE_URL
+ENV APIBASE_URL=${APIBASE_URL}
 
+COPY package*.json ./
 RUN npm install
 
 COPY . .
 
-EXPOSE 5173
+RUN npm run build
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+EXPOSE 443
+
+CMD ["npm", "run", "start"]

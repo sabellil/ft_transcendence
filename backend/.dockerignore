@@ -1,6 +1,7 @@
 # Secrets
 
 .env
+!.env.example
 
 secrets
 
@@ -34,8 +35,6 @@ logs
 # Hide
 
 .*
-
-!.env.example
 
 !.dockerignore
 !.gitignore
