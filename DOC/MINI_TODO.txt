@@ -1,0 +1,72 @@
+TODO update 
+
+TODO 
+- Framework for frontend and backend 2 pts OK
+◦ Use a frontend framework (React, Vue, Angular, Svelte, etc.).
+◦ Use a backend framework (Express, NestJS, Django, Flask, Ruby on Rails,
+etc.).
+◦ Full-stack frameworks (Next.js, Nuxt.js, SvelteKit) count as both if you use
+  both their frontend and backend capabilities.
+
+
+- Use an ORM for the database 1 pt OK
+
+
+- Standard user management and authentication. 2pts 
+◦ Users can update their profile information. 
+◦ Users can upload an avatar (with a default avatar if none provided).  
+◦ Users can add other users as friends and see their online status.  
+◦ Users have a profile page displaying their information 
+--> acceder a la page de profil des autres 
+
+
+- An organization system: 2pts
+◦ Create, edit, and delete organizations.
+◦ Add users to organizations.
+◦ Remove users from organizations.
+◦ View organizations and allow users to perform specific actions within an
+  organization (minimum: create, read, update)
+  --> comment on integre ca : systeme de posts a la Facebook pour justifier la create update read par des users? 
+
+
+- Allow users to interact with other users. The minimum requirements are: 2pts
+◦ A basic chat system (send/receive messages between users). TODO SARA
+◦ A profile system (view user information). OK 
+◦ A friends system (add/remove friends, see friends list). OK
+
+
+- Advanced permissions system: 2pts
+◦ View, edit, and delete users (CRUD).
+◦ Roles management (admin, user, guest, moderator, etc.).
+◦ Different views and actions based on user role.
+--> Rajouter role de moderateur : un role ayant un acces read a tout pour alerter l'admin qui lui peut ban ou supprimer ? A DETERMINER 
+
+
+- A complete notification system for all creation, update, and deletion actions. 1pt
+--> C'est non, trop complique et on a deja assez de points 
+
+- Implement real-time features using WebSockets or similar technology. 2pts
+◦ Real-time updates across clients.
+◦ Handle connection/disconnection gracefully.
+◦ Efficient message broadcasting
+--> Quel type de notification ? l'admin qui previent qu'une mise a jour est en cours? peu importe ? A DETERMINER
+
+
+- Implement advanced search functionality with filters, sorting, and pagination. 1pt
+
+- Support for multiple languages (at least 3 languages). (why not) (ca comprend les cartes) 1pt
+
+- User activity analytics and insights dashboard. 1pt
+--> Encart sur le profile qui dit X d'echanges realises, % de pokemons de tel type possede, % de completion de la collection atteint
+
+- Implement remote authentication with OAuth 2.0 (Google, GitHub, 42,
+etc.). 1pt
+
+
+- A complete notification system for all creation, update, and deletion actions. 1pt
+--> C'est non, trop complique et on a deja assez de points 
+
+
+TODO: 
+- Faire une seule commande pour lancer le projet au lieu des deux actuelles (setup et start)
+- Rajouter fichiers env (present dans gitginore) + .env.example pour la forme 

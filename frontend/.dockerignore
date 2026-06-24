@@ -1,0 +1,47 @@
+# Secrets
+
+.env
+
+secrets
+
+
+
+
+# Dependencies
+
+node_modules
+package-lock.json
+
+
+
+
+# Generated
+
+dist
+prisma.config.js
+
+
+
+
+# Logs
+
+logs
+*.log
+
+
+
+
+# Hide
+
+.*
+
+!.env.example
+
+!.dockerignore
+!.gitignore
+
+!.dockerkeep
+!.gitkeep
+
+!.git
+!.github

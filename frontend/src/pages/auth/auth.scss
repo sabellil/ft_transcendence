@@ -1,0 +1,162 @@
+// ---- tokens ----
+
+$primary: #b997ff;
+$secondary: #fec4ff;
+$light: #F7EBFF;
+
+
+
+
+// ---- page ----
+
+.auth-page {
+	width: 80vw;
+	max-width: 26rem;
+	max-height: 95vh;
+	overflow-y: auto;
+	background: url("/resource/testback.webp") center / cover;
+	border: 1px solid rgba(247, 235, 255, 0.3);
+	border-radius: 24px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+}
+
+
+
+
+// ---- buttons ----
+
+.auth-guest {
+	display: block;
+	width: 85%;
+	height: 3.5rem;
+	margin: 2.5rem auto 1rem;
+	font-family: fantasy;
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: #fff;
+	background: $primary;
+	border: none;
+	border-radius: 24px;
+	box-shadow: 0 4px 16px rgba(185, 151, 255, 0.35);
+
+	&:hover {
+		background: $secondary;
+		transform: translateY(-2px);
+	}
+}
+
+
+.auth-logo {
+	display: block;
+	margin: 1rem auto;
+	max-height: 12rem;
+}
+
+
+
+
+// ---- form ----
+
+.auth-fields {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	width: 85%;
+	padding: 1rem 0;
+}
+
+
+
+
+// ---- inputs ----
+
+.auth-input {
+	width: 100%;
+	height: 3rem;
+	font-size: 1.1rem;
+	text-align: center;
+	background: rgba(247, 235, 255, 0.85);
+	backdrop-filter: blur(8px);
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 24px;
+	outline: none;
+
+	&:focus {
+		border-color: $primary;
+	}
+}
+
+
+.auth-btn {
+	width: 10rem;
+	height: 3rem;
+	margin-top: 0.5rem;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #fff;
+	background: $primary;
+	border: none;
+	border-radius: 24px;
+
+	&:hover {
+		background: $secondary;
+	}
+}
+
+
+.auth-link {
+	margin-top: 0.25rem;
+	font-size: 0.85rem;
+	color: $primary;
+	font-weight: 500;
+	background: none;
+	border: none;
+	text-decoration: underline;
+
+	&:hover {
+		color: darken($secondary, 10%);
+	}
+}
+
+
+.auth-error {
+	color: #f48787;
+	font-size: 0.9rem;
+}
+
+
+.auth-success {
+	color: #7ecb7e;
+	font-size: 0.9rem;
+}
+
+
+
+
+// ---- footer ----
+
+.auth-footer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+	padding: 1rem 0;
+	margin-top: auto;
+
+	button {
+		padding: 0;
+		font-size: 0.75rem;
+		color: rgba(255, 255, 255, 0.5);
+		background: none;
+		border: none;
+
+		&:hover {
+			color: #fff;
+			text-decoration: underline;
+		}
+	}
+}
