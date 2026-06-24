@@ -1,0 +1,135 @@
+services:
+
+
+
+
+  postgres:
+    image: postgres:16
+
+    container_name: transcendence_postgres
+    restart: unless-stopped
+
+    environment:
+      - POSTGRES_USER_FILE=/run/secrets/db_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - POSTGRES_NAME_FILE=/run/secrets/db_name
+
+    secrets:
+      - db_user
+      - db_password
+      - db_name
+
+    ports:
+      - "${DB_PORT:-5432}:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/db_user) -d $(cat /run/secrets/db_name)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+
+
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        - DATABASE_URL=postgresql://${DB_USER:-user}:${DB_PASS:-pass}@postgres:${DB_PORT:-5432}/${DB_NAME:-transcendence}
+
+    container_name: transcendence_backend
+    restart: unless-stopped
+
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+      - BACKEND_PORT=${BACKEND_PORT:-3000}
+      - FRONTEND_PORT=${FRONTEND_PORT:-443}
+      - SSL_KEY_PATH=/run/secrets/server_key
+      - SSL_CERT_PATH=/run/secrets/server_crt
+      - JWT_SECRET_FILE=/run/secrets/jwt_secret
+      - HASH_SECRET_FILE=/run/secrets/hash_secret
+
+    secrets:
+      - server_key
+      - server_crt
+      - jwt_secret
+      - hash_secret
+
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('https').get('https://127.0.0.1:3000/',{rejectUnauthorized:false},r=>process.exit(r.statusCode<500?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+
+
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - APIBASE_URL=https://${DOMAIN:-localhost}:${BACKEND_PORT:-3000}
+
+    container_name: transcendence_frontend
+    restart: unless-stopped
+
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+      - BACKEND_PORT=${BACKEND_PORT:-3000}
+      - FRONTEND_PORT=${FRONTEND_PORT:-443}
+      - SSL_KEY_PATH=/run/secrets/server_key
+      - SSL_CERT_PATH=/run/secrets/server_crt
+
+    secrets:
+      - server_key
+      - server_crt
+
+    ports:
+      - "${FRONTEND_PORT:-443}:443"
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('https').get('https://127.0.0.1:443/',{rejectUnauthorized:false},r=>process.exit(r.statusCode===200?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+
+
+
+secrets:
+  db_user:
+    file: ./secrets/db_user
+  db_password:
+    file: ./secrets/db_password
+  db_name:
+    file: ./secrets/db_name
+  jwt_secret:
+    file: ./secrets/jwt_secret
+  hash_secret:
+    file: ./secrets/hash_secret
+  server_key:
+    file: ./secrets/server.key
+  server_crt:
+    file: ./secrets/server.crt
+
+volumes:
+  postgres_data:
