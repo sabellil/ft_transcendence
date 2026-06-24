@@ -15,8 +15,16 @@ import { loadUsershipUser, findUsershipRow } from "./friends.ts";
 import { UsershipStatus } from "@prisma/client";
 
 // loadMessageUser - load user id + messageIds for chat operations
-async function loadMessageUser{
-
+async function loadMessageUser(
+where: Prisma.UserWhereUniqueInput,
+	tx: Prisma.TransactionClient | typeof prisma = prisma,
+): Promise<{ id: number; username: string; messageIds: number[]; usershipIds: number[] }> {
+	const user = await tx.user.findUnique({
+		where,
+		select: { id: true, username: true, messageIds: true, usershipIds: true,},
+	});
+	if (!user) { throw new Error("error.userNotFound");}
+	return user;
 }
 
 // checkAreFriends - Verify that boths ussers are friends before accessing chat
