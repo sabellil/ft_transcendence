@@ -1,7 +1,12 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
 
-// https://vitejs.dev/config/
+import react from "@vitejs/plugin-react";
+
+
+
+
+// Vite Configuration
 export default defineConfig({
-  plugins: [react()],
-})
+	envPrefix: ["APIBASE_URL"],
+	plugins: [react()],
+});
