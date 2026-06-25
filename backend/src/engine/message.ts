@@ -48,13 +48,19 @@ async function getConversation(username: string, friendUsername: string, limit?:
 	if (!sharedMessageIds.length) {
 		return [];
 	}
-	// fetch all shared messages, ordered by time, with pagination
-	return prisma.message.findMany({
+	const message = await prisma.message.findMany({
 		where: { id: { in: sharedMessageIds } },
 		orderBy: { time: "asc" },
 		take: limit,
 		skip: offset,
 	});
+
+	return message.map(message => ({
+	...message,
+	username: message.userId === me.id
+		? me.username
+		: friendData.username,
+}));
 }
 
 // createMessage - Create a new message and attach it to both user
@@ -82,10 +88,10 @@ async function createMessage(username: string, friendUsername: string, content: 
 			where: { id: friendData.id },
 			data: { messageIds: { push: message.id } },
 		});
-
-		return message;
+		return {
+			...message, username: me.username,
+		};
 	});
-
 }
 
 
