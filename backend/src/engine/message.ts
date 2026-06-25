@@ -14,7 +14,8 @@ import { loadUsershipUser, findUsershipRow } from "./friends.ts";
 
 import { UsershipStatus } from "@prisma/client";
 
-// loadMessageUser - load user id + messageIds for chat operations
+
+// loadMessageUser - load user id + messageIds for chat operationss
 async function loadMessageUser(
 where: Prisma.UserWhereUniqueInput,
 	tx: Prisma.TransactionClient | typeof prisma = prisma,
