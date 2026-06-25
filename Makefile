@@ -1,4 +1,4 @@
-.PHONY: all clean fclean start stop backend frontend prisma
+.PHONY: all clean fclean start stop backend frontend prisma check_dockers
 
 
 
@@ -119,3 +119,15 @@ prisma:
 	@echo "Running Prisma migrations..."
 	docker exec -it transcendence_backend npm run migrate
 	@echo "Successfully."
+
+
+
+
+check_dockers:
+	@echo "----DOCKER INFOS----" && \
+	docker ps -a --format "table {{.Names}}\t{{.RunningFor}}\t{{.Status}}\t\t" && echo "---" && \
+	docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t" && \
+	echo "----IMAGES----" && \
+	docker image ls && \
+	echo "----VOLUMES----" && \
+	docker volume ls
