@@ -60,7 +60,7 @@ function MessagePage({ isGuest }: { isGuest: boolean }) {
 	if (isGuest) {
 		return (
 			<div className="message-panel">
-				<h2 className="message-title">Messages</h2>
+				<h2 className="message-title">Mes</h2>
 				<p>{t("guest.message")}</p>
 			</div>
 		);
@@ -68,7 +68,7 @@ function MessagePage({ isGuest }: { isGuest: boolean }) {
 
 	return (
 		<div className="message-panel">
-			<h2 className="message-title">Messages</h2>
+			<h2 className="message-title">Mes</h2>
 
 			<div className="message-layout">
 				<div className="message-friends">

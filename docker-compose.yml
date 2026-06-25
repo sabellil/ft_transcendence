@@ -115,7 +115,27 @@ services:
       retries: 3
       start_period: 10s
 
+frontend-dev:
+  build:
+    context: ./frontend
+    dockerfile: Dockerfile.dev
 
+  container_name: transcendence_frontend_dev
+  restart: unless-stopped
+
+  volumes:
+    - ./frontend:/app
+    - /app/node_modules
+
+  environment:
+    - APIBASE_URL=https://localhost:3000
+
+  ports:
+    - "5173:5173"
+
+  depends_on:
+    backend:
+      condition: service_healthy
 
 
 secrets:

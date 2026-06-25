@@ -1,0 +1,24 @@
+# =========================================
+# Étape 1 : Développer l'application React.js
+# =========================================
+
+# Utiliser une image Node.js légère pour le développement
+FROM node:24-alpine
+
+# Définir le répertoire de travail à l'intérieur du conteneur
+WORKDIR /app
+
+# Copier d'abord les fichiers liés aux paquets pour tirer parti du mécanisme de mise en cache de Docker
+COPY package.json package-lock.json ./
+
+# Installer les dépendances du projet
+RUN --mount=type=cache,target=/root/.npm npm install
+
+# Copier le reste du code source de l'application dans le conteneur
+COPY . .
+
+# Exposer le port utilisé par le serveur de développement Vite
+EXPOSE 5173
+
+# Utiliser une commande par défaut, peut être surchargée dans le fichier Docker compose.yml
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

@@ -3,6 +3,7 @@
 $primary: #b997ff;
 $secondary: #fec4ff;
 $panel-bg: #badaff;
+$purple:#60079C;
 
 
 
@@ -206,7 +207,6 @@ button {
 	background: $panel-bg;
 	border: 15px solid #fff;
 	border-radius: 2rem;
-	background-image: url("/resource/listBG.webp");
 	background-size: cover;
 	background-position: center;
 }
