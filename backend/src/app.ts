@@ -31,6 +31,7 @@ import { UserStatus } from "@prisma/client";
 import { prisma } from "./constants.ts";
 
 
+
 import {
 	JWT_SECRET, BODY_LIMIT, MAX_FILE_SIZE, RATE_LIMIT_AUTH, RATE_LIMIT_GLOBAL,
 	ALLOWED_ORIGIN_HOSTS,
@@ -54,6 +55,7 @@ import guildsRoutes  from "./engine/guilds.ts";
 
 import cardsRoutes   from "./engine/cards.ts";
 
+import messagesRoutes from "./engine/message.ts";
 
 
 
@@ -142,6 +144,7 @@ export async function createApp(httpsOpts: { key: Buffer; cert: Buffer }) {
 		await scope.register(blocksRoutes,  { prefix: "/api/block"  });
 		await scope.register(guildsRoutes,  { prefix: "/api/guild"  });
 		await scope.register(cardsRoutes,   { prefix: "/api/card"   });
+		await scope.register(messagesRoutes,   { prefix: "/api/message"  });
 	});
 
 

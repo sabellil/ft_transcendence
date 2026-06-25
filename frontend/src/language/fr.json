@@ -194,7 +194,8 @@
     "deleteUserFailed": "Échec de la suppression du compte",
     "createCardFailed": "Échec de la création de carte",
     "editCardFailed": "Échec de la modification de carte",
-    "deleteCardFailed": "Échec de la suppression de carte"
+    "deleteCardFailed": "Échec de la suppression de carte",
+    "messageTooLong": "Le message dépasse la longueur maximale"
   },
   "validation": {
     "emailInvalid": "Format d'email invalide",

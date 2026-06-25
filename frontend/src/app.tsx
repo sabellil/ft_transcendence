@@ -31,13 +31,14 @@ import("./app.scss");
 		{ getUser }, { logoutUser }, { API_USER, assetUrl, API_CARD },
 		{ sanitizeUsername },
 		{ default: AuthForm }, { default: FriendsList }, { default: GuildList },
-		{ default: ProfilePage }, { default: ErrorPage }, { default: LegalPage },
+		{ default: MessagePage }, { default: ProfilePage }, { default: ErrorPage }, { default: LegalPage },
 	] = await Promise.all([
 		import("./engine/users.ts"), import("./engine/auth.ts"), import("./engine/api.ts"),
 		import("./validation.ts"),
 		import("./pages/auth/auth.tsx"), import("./pages/friends/friends.tsx"),
-		import("./pages/guilds/guilds.tsx"), import("./pages/profile/profile.tsx"),
-		import("./pages/error/error.tsx"), import("./pages/legal/legal.tsx"),
+		import("./pages/guilds/guilds.tsx"), import("./pages/message/message.tsx"),
+		import("./pages/profile/profile.tsx"), import("./pages/error/error.tsx"),
+		import("./pages/legal/legal.tsx"),
 	]);
 
 
@@ -58,7 +59,7 @@ import("./app.scss");
 
 	// ---- app ----
 
-	type View = "friends" | "guilds" | "profile";
+	type View = "friends" | "guilds" | "message" | "profile";
 
 
 	function App() {
@@ -106,7 +107,7 @@ import("./app.scss");
 
 		useEffect(() => {
 			const s = sessionStorage.getItem("view") as View | null;
-			if (s && ["friends", "guilds", "profile"].includes(s)) setView(s);
+			if (s && ["friends", "guilds", "message", "profile"].includes(s)) setView(s);
 		}, []);
 
 
@@ -145,6 +146,7 @@ import("./app.scss");
 					<div className="nav-bar">
 						<div className="nav-inner">
 							<button className="nav-btn" onClick={() => nav("friends")}>{t("nav.friends")}</button>
+							<button className="nav-btn" onClick={() => nav("message")}>Messages</button>
 							<button className="nav-btn" onClick={() => nav("guilds")}>{t("nav.guilds")}</button>
 							<div className="profile-corner" onClick={() => nav("profile")}>
 								<span className="profile-name">{sanitizeUsername(profile.username)}</span>
@@ -161,6 +163,7 @@ import("./app.scss");
 							<button className="wish-btn">🤍</button>
 							<button className="add-btn">+</button>
 						</>)}
+						{view === "message" && <div className="content-area"><MessagePage isGuest={isGuest} /></div>}
 						{view === "guilds" && <div className="content-area"><GuildList isGuest={isGuest} profile={profile} /></div>}
 						{view === "profile" && <div className="content-area"><ProfilePage profile={profile} onProfileUpdate={setProfile} isGuest={isGuest} /></div>}
 					</div>
