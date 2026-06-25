@@ -101,12 +101,13 @@ function MessagePage({ isGuest }: { isGuest: boolean }) {
 								{messages.map(message => (
 									<div key={message.id} className="message-item">
 										<p>
-											<strong>User #{message.userId}:</strong> {message.content}
+											<strong>{sanitizeUsername(message.username)}:</strong> {message.content}
 										</p>
 										<span>{new Date(message.time).toLocaleString()}</span>
 									</div>
 								))}
 									</div>
+
 							<div className="message-send">
 								<input
 									type="text"

@@ -5,6 +5,7 @@ export const API_MESSAGE = `${API_BASE}/api/message`;
 export interface ChatMessage {
 	id: number;
 	userId: number;
+    username: string;
 	content: string;
 	time: string;
 }
