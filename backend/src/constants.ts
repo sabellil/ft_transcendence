@@ -139,7 +139,7 @@ export const PAGINATION_DEFAULT = 50;
 
 export const PAGINATION_MAX    = 200;
 
-
+export const MESSAGE_MAX = 100;
 
 
 

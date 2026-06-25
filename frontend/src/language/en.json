@@ -194,7 +194,8 @@
     "deleteUserFailed": "Failed to delete account",
     "createCardFailed": "Failed to create card",
     "editCardFailed": "Failed to edit card",
-    "deleteCardFailed": "Failed to delete card"
+    "deleteCardFailed": "Failed to delete card",
+    "messageTooLong": "Message exceeds maximum length"
   },
   "validation": {
     "emailInvalid": "Invalid email format",

@@ -6,7 +6,7 @@ import type { Prisma } from "@prisma/client";
 
 import { requireAuth, wrapHandler } from "../middleware.ts";
 
-import { prisma, PAGINATION_DEFAULT, PAGINATION_MAX } from "../constants.ts";
+import { prisma, PAGINATION_DEFAULT, PAGINATION_MAX, MESSAGE_MAX} from "../constants.ts";
 
 import { lookupUser } from "./users.ts";
 
@@ -65,6 +65,7 @@ async function getConversation(username: string, friendUsername: string, limit?:
 
 // createMessage - Create a new message and attach it to both user
 async function createMessage(username: string, friendUsername: string, content: string) {
+	if (content.length > MESSAGE_MAX) { throw new Error("error.messageTooLong");}
 	// validate content is not empty
 	if (!content || !content.trim()) { throw new Error("error.emptyMessage");}
 	const friend = await checkAreFriends(username, friendUsername);
