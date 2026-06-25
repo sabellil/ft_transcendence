@@ -1,0 +1,6 @@
+# Ignore everything in volume except .gitkeep (structure-only tracking)
+# Back up this entire folder separately for project restoration
+
+*
+!.gitignore
+!.gitkeep

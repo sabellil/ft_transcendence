@@ -4,7 +4,7 @@ services:
 
 
   postgres:
-    image: postgres:16
+    image: docker.io/library/postgres:16
 
     container_name: transcendence_postgres
     restart: unless-stopped
@@ -23,7 +23,7 @@ services:
       - "${DB_PORT:-5432}:5432"
 
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./volume/postgres:/var/lib/postgresql/data
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/db_user) -d $(cat /run/secrets/db_name)"]
@@ -59,6 +59,9 @@ services:
       - server_crt
       - jwt_secret
       - hash_secret
+
+    volumes:
+      - ./volume/uploads:/app/uploads
 
     ports:
       - "${BACKEND_PORT:-3000}:3000"
@@ -131,5 +134,3 @@ secrets:
   server_crt:
     file: ./secrets/server.crt
 
-volumes:
-  postgres_data:
