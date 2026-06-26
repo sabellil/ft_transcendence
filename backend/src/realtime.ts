@@ -55,3 +55,41 @@ async function getFriendsIds(userId: number): Promise<number[]> {
 
     return rows.map(row => row.userId);
 }
+
+// Initialize the Socket.IO server and set up event listeners
+let ioInstance: Server | null = null;
+
+async function notifyFriends(userId: number, event: "friend:online" | "friend:offline") {
+    // Fetch the user's details from the database, selecting only the necessary fields
+    const user = await.prisma.user.findUnique({
+        where: { id: userId },
+        select: { username: true, avatar: true, status: true },
+    });
+
+    if (!user) return;
+    // Get the IDs of the user's friends
+    const friendsIds = await getFriendsIds(userId);
+    for (const friendId of friendsIds) {
+        const sockets = onlineSockets.get(friendId);
+        // If the friend is not online, skip to the next friend
+        if (!sockets) continue;
+        // Emit the event to each of the friend's sockets, sending the user's details
+        for (const socketId of sockets) {
+            ioInstance?.to(socketId).emit(event, { username: user.username, avatar: user.avatar, status: user.status });
+        }
+    }
+}
+
+// Setup the real-time communication using Socket.IO
+export function setupRealtime(app: FastifyInstance) {
+    // Create a new Socket.IO server instance, attaching it to the Fastify server
+    const io = new Server(app.server, {
+        cors: {
+            origin: true, // Allow all origins for CORS (Cross-Origin Resource Sharing)
+            credentials: true, // Allow credentials (cookies, authorization headers)
+        },
+    });
+    ioInstance = io;
+    // Listen for new socket connections TODO
+}
+
