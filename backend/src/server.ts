@@ -4,7 +4,7 @@ import fs from "fs";
 import { createApp, shutdown } from "./app.ts";
 import { prisma } from "./constants.ts";
 import { CardRarity, CardType } from "@prisma/client";
-
+import { setupRealTime } from "./realtime.ts";
 
 
 
@@ -34,7 +34,8 @@ const httpsOpts = {
 
 // createApp — assemble and configure the Fastify application with HTTPS
 const app = await createApp(httpsOpts);
-
+// setupRealTime — configure real-time communication (WebSocket) for the app
+setupRealTime(app);
 
 // ---- seed placeholder cards ----
 
