@@ -61,7 +61,7 @@ let ioInstance: Server | null = null;
 
 async function notifyFriends(userId: number, event: "friend:online" | "friend:offline") {
     // Fetch the user's details from the database, selecting only the necessary fields
-    const user = await.prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: { id: userId },
         select: { username: true, avatar: true, status: true },
     });
@@ -81,7 +81,7 @@ async function notifyFriends(userId: number, event: "friend:online" | "friend:of
 }
 
 // Setup the real-time communication using Socket.IO
-export function setupRealtime(app: FastifyInstance) {
+export function setupRealTime(app: FastifyInstance) {
     // Create a new Socket.IO server instance, attaching it to the Fastify server
     const io = new Server(app.server, {
         cors: {
@@ -89,7 +89,59 @@ export function setupRealtime(app: FastifyInstance) {
             credentials: true, // Allow credentials (cookies, authorization headers)
         },
     });
+    // Store the Socket.IO instance for later use in notifications
     ioInstance = io;
     // Listen for new socket connections TODO
+    io.on("connection", async (socket) => {
+        try {
+            // Extract the JWT token from the cookies in the socket handshake headers
+            const token = getCookie(socket.handshake.headers.cookie, "token");
+            if (!token) {
+                socket.disconnect(); // Disconnect if no token is found
+                return;
+            }
+            const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;// Verify the JWT token and extract the payload
+            const user = await prisma.user.findUnique({// Find the user in the database using the ID from the JWT payload
+                where: { id: payload.id },
+                select: { id: true, username: true },
+            });
+            if (!user) {
+                socket.disconnect(true);
+                return;
+            }
+            socket.data.userId = user.id; // Store the user ID in the socket's data for later use
+            socket.data.username = user.username; // Store the username in the socket's data for later use  
+            const existingSockets = onlineSockets.get(user.id) || new Set<string>();    
+            const wasOffline = existingSockets.size === 0; // Check if the user was previously offline
+            existingSockets.add(socket.id); // Add the new socket ID to the set of online sockets for this user
+            onlineSockets.set(user.id, existingSockets); // Update the map with the new set of sockets
+            if (wasOffline) {
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { status: UserStatus.Online }, // Update the user's status to online in the database
+                });
+                await notifyFriends(user.id, "friend:online"); // Notify friends that the user is now online
+            }
+            socket.on("disconnect", async () => {
+                const sockets = onlineSockets.get(user.id);
+                if (!sockets)
+                    return;
+                sockets.delete(socket.id);
+                if (sockets.size > 0){
+                    onlineSockets.set(user.id, sockets);
+                    return;
+                }
+                onlineSockets.delete(user.id);
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { status: UserStatus.Offline }, // Update the user's status to offline in the database
+                });
+                await notifyFriends(user.id, "friend:offline"); // Notify friends that the user is now offline
+            });
+        } catch {
+            socket.disconnect(true); // Disconnect the socket if any error occurs during the connection process
+        }
+    });
 }
+
 

@@ -34,6 +34,7 @@ const httpsOpts = {
 
 // createApp — assemble and configure the Fastify application with HTTPS
 const app = await createApp(httpsOpts);
+
 // setupRealTime — configure real-time communication (WebSocket) for the app
 setupRealTime(app);
 
