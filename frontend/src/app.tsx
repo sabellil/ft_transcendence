@@ -77,6 +77,9 @@ import("./app.scss");
 		const [error,     setError]     = useState(false);
 		const [showLegal, setShowLegal] = useState(false);
 		const [notice,	  setNotice]		= useState("");
+		const [friendsRefreshKey, setFriendsRefreshKey] = useState(0);
+
+	
 
 
 		// ---- load profile ----
@@ -119,12 +122,14 @@ import("./app.scss");
 			if (!profile || isGuest)
 				return;
 			const socket = connectRealTime();
-			socket.on("friend:online", (friend: { username: string }) => {
-				setNotice(`${friend.username} ${t("realtime.friendOnline")}`);
-				setTimeout(() => setNotice(""), 3000);
+			socket.on("friend:online", (friend: { username: string }) => {// when server sends a friendonline event 
+				setNotice(`${friend.username} ${t("realtime.friendOnline")}`);// display notification
+				setFriendsRefreshKey(k => k + 1);
+				setTimeout(() => setNotice(""), 3000);// remove notification in 3 seconds
 			});
 			socket.on("friend:offline", (friend: { username: string }) => {
 				setNotice(`${friend.username} ${t("realtime.friendOffline")}`);
+				setFriendsRefreshKey(k => k + 1);
 				setTimeout(() => setNotice(""), 3000);
 			});
 			return () => {
@@ -186,7 +191,7 @@ import("./app.scss");
 					</div>
 					<div className="home-panel">
 						{view === "friends" && (<>
-							<FriendsList isGuest={isGuest} />
+							<FriendsList isGuest={isGuest} refreshKey={friendsRefreshKey}/>
 							<div className="content-area">
 									<CardGrid />
 								</div>

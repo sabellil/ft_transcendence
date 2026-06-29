@@ -9,7 +9,7 @@ import { useAbortableLoad } from "../../app.tsx";
 
 
 
-function FriendsList({ isGuest }: { isGuest: boolean }) {
+function FriendsList({ isGuest, refreshKey}: { isGuest: boolean; refreshKey: number}) {
 	const t = useT();
 
 	const [friends,    setFriends]    = useState<PublicUser[]>([]);
@@ -26,7 +26,7 @@ function FriendsList({ isGuest }: { isGuest: boolean }) {
 		try { const d = await getDirectionalFriendRequests("", "incoming"); if (signal?.aborted) return; if (d) setIncoming(d); } catch {}
 		try { const d = await getDirectionalFriendRequests("", "outgoing"); if (signal?.aborted) return; if (d) setOutgoing(d); } catch {}
 	};
-	useAbortableLoad(load, [isGuest]);
+	useAbortableLoad(load, [isGuest, refreshKey]);
 
 
 	async function handleCreate() {
