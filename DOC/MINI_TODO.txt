@@ -30,7 +30,7 @@ etc.).
 
 
 - Allow users to interact with other users. The minimum requirements are: 2pts
-◦ A basic chat system (send/receive messages between users). TODO SARA
+◦ A basic chat system (send/receive messages between users). OK
 ◦ A profile system (view user information). OK 
 ◦ A friends system (add/remove friends, see friends list). OK
 
@@ -49,18 +49,18 @@ etc.).
 ◦ Real-time updates across clients.
 ◦ Handle connection/disconnection gracefully.
 ◦ Efficient message broadcasting
---> Quel type de notification ? l'admin qui previent qu'une mise a jour est en cours? peu importe ? A DETERMINER
+--> Notification Friend just connected, just disconnected
 
 
 - Implement advanced search functionality with filters, sorting, and pagination. 1pt
+--> Attention a bien fetch dans la base de donnees le nb de cartes voulues et pas juste gerer ca en frontend! (conseil JB)
 
 - Support for multiple languages (at least 3 languages). (why not) (ca comprend les cartes) 1pt
 
 - User activity analytics and insights dashboard. 1pt
 --> Encart sur le profile qui dit X d'echanges realises, % de pokemons de tel type possede, % de completion de la collection atteint
 
-- Implement remote authentication with OAuth 2.0 (Google, GitHub, 42,
-etc.). 1pt
+- Implement remote authentication with OAuth 2.0 (Google, GitHub, 42, etc.). 1pt
 
 
 - A complete notification system for all creation, update, and deletion actions. 1pt

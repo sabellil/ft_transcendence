@@ -1,0 +1,6 @@
+{
+    "realtime": {
+        "friendOnline": "se acaba de conectar",
+        "friendOffline": "se acaba de desconectar"
+    }
+}

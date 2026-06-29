@@ -30,11 +30,12 @@ import("./app.scss");
 	const [
 		{ getUser }, { logoutUser }, { API_USER, assetUrl, API_CARD },
 		{ sanitizeUsername },
+		{ connectRealTime, disconnectRealTime},
 		{ default: AuthForm }, { default: FriendsList }, { default: GuildList },
 		{ default: MessagePage }, { default: ProfilePage }, { default: ErrorPage }, { default: LegalPage },
 	] = await Promise.all([
 		import("./engine/users.ts"), import("./engine/auth.ts"), import("./engine/api.ts"),
-		import("./validation.ts"),
+		import("./validation.ts"), import("./engine/realtime.ts"),
 		import("./pages/auth/auth.tsx"), import("./pages/friends/friends.tsx"),
 		import("./pages/guilds/guilds.tsx"), import("./pages/message/message.tsx"),
 		import("./pages/profile/profile.tsx"), import("./pages/error/error.tsx"),
@@ -75,6 +76,7 @@ import("./app.scss");
 		const [view,      setView]      = useState<View>("friends");
 		const [error,     setError]     = useState(false);
 		const [showLegal, setShowLegal] = useState(false);
+		const [notice,	  setNotice]		= useState("");
 
 
 		// ---- load profile ----
@@ -110,6 +112,27 @@ import("./app.scss");
 			if (s && ["friends", "guilds", "message", "profile"].includes(s)) setView(s);
 		}, []);
 
+		// ---- Online/offline friend ----
+
+		//TODO ICI
+		useEffect(() => {
+			if (!profile || isGuest)
+				return;
+			const socket = connectRealTime();
+			socket.on("friend:online", (friend: { username: string }) => {
+				setNotice(`${friend.username} ${t("realtime.friendOnline")}`);
+				setTimeout(() => setNotice(""), 3000);
+			});
+			socket.on("friend:offline", (friend: { username: string }) => {
+				setNotice(`${friend.username} ${t("realtime.friendOffline")}`);
+				setTimeout(() => setNotice(""), 3000);
+			});
+			return () => {
+				socket.off("friend:online");
+				socket.off("friend:offline");
+				disconnectRealTime();
+			};
+		}, [profile, isGuest, t]);
 
 		// ---- auth handlers ----
 
@@ -142,6 +165,13 @@ import("./app.scss");
 		if (profile) {
 			return (
 				<div className="main-layout">
+					{
+						notice && (
+							<div className="realtime-notice">
+								{notice}
+							</div>
+						)
+					}
 					<div className="logout-corner" onClick={handleLogout}><span>{isGuest ? t("auth.guestExit") : t("auth.logout")}</span></div>
 					<div className="nav-bar">
 						<div className="nav-inner">

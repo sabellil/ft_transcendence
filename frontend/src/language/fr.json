@@ -82,6 +82,10 @@
     "online": "En ligne",
     "offline": "Hors ligne"
   },
+  "realtime": {
+  "friendOnline": "vient de se connecter",
+  "friendOffline": "vient de se déconnecter"
+  },
   "legal": {
     "privacyPolicy": "Confidentialité",
     "termsOfService": "Conditions d'utilisation",

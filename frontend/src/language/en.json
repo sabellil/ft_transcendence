@@ -82,6 +82,10 @@
     "online": "Online",
     "offline": "Offline"
   },
+  "realtime": {
+  "friendOnline": "just connected",
+  "friendOffline": "just disconnected"
+  },
   "legal": {
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
