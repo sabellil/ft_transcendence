@@ -1,19 +1,10 @@
-import { API_AUTH, API_USER, apiGet, uploadMultipart, authOpts } from "./api.ts";
+import { API_USER, apiGet, uploadMultipart, authOpts } from "./api.ts";
 
 
 import type { Profile, Ok } from "../constants.ts";
 
 
 
-
-
-// createUser — register new user account
-export async function createUser(email: string, username: string, password: string): Promise<Ok> {
-	const res = await fetch(API_AUTH + "/register", authOpts({ json: { email, username, password } }));
-	const data = await res.json();
-	if (!res.ok) throw new Error(data.error || "error.createUserFailed");
-	return data as Ok;
-}
 
 
 
@@ -38,7 +29,7 @@ export async function getPublicUser(username: string) {
 
 
 // editUser — update own profile with optional avatar upload
-export async function editUser(_user: string, body: {
+export async function editUser(body: {
 	username?: string; email?: string; password?: string; avatarFile?: File; language?: string;
 }) {
 	const { avatarFile, ...jsonFields } = body;
@@ -57,7 +48,7 @@ export async function editUser(_user: string, body: {
 
 
 // deleteUser — delete own account
-export async function deleteUser(_user?: string): Promise<Ok> {
+export async function deleteUser(): Promise<Ok> {
 	const res = await fetch(`${API_USER}/remove`, authOpts({ json: {} }));
 	const data = await res.json();
 	if (!res.ok) throw new Error(data.error || "error.deleteUserFailed");

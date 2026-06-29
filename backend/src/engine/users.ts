@@ -66,11 +66,11 @@ export async function createUser(email: string, username: string, password: stri
 
 
 
-// lookupUser — resolve username to id+username (throws if not found)
+// lookupUser — resolve username to id+username (case-insensitive, throws if not found)
 export async function lookupUser(username: string) {
-	// findUnique — fetch user by username
+	// findUnique — fetch user by lowercase username
 	const user = await prisma.user.findUnique({
-		where: { username },
+		where: { username: username.toLowerCase() },
 		select: { id: true, username: true },
 	});
 	// !user → user not found
@@ -321,9 +321,30 @@ async function deleteUser(username: string) {
 				where: { id: { in: current.cardshipIds } },
 			});
 		}
-		// messageIds → delete message rows
+		// messageIds → clean shared references from friends before deleting rows
 		if (current.messageIds.length) {
-			// deleteMany — remove message rows
+			// findMany — find all users who share any of these message IDs
+			const sharers = await tx.user.findMany({
+				where: {
+					id: { not: current.id },
+					messageIds: { hasSome: current.messageIds },
+				},
+				select: { id: true, messageIds: true },
+			});
+
+			// clean each sharer's messageIds array by removing the deleted user's IDs
+			const deletedIdSet = new Set(current.messageIds);
+			for (const sharer of sharers) {
+				const cleaned = sharer.messageIds.filter((id: number) => !deletedIdSet.has(id));
+				if (cleaned.length !== sharer.messageIds.length) {
+					await tx.user.update({
+						where: { id: sharer.id },
+						data:  { messageIds: cleaned },
+					});
+				}
+			}
+
+			// deleteMany — remove message rows from database
 			await tx.message.deleteMany({
 				where: { id: { in: current.messageIds } },
 			});
@@ -362,7 +383,7 @@ async function usersRoutes(app: FastifyInstance) {
 
 	app.get("/:username", wrapHandler(async (request, reply) => {
 		const requester = request.user;
-		const { username } = request.params as { username: string };
+		const username = (request.params as { username: string }).username.toLowerCase();
 		// getUser — fetch target user profile (no email)
 		const profile = await getUser(username, false);
 		// !profile → user not found

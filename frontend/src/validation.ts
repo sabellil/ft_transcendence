@@ -27,7 +27,8 @@ export const loginSchema = z.object({
 	username: z.string()
 		.min(1, "validation.fieldRequired")
 		.max(USERNAME_MAX, "validation.usernameTooLong")
-		.trim(),
+		.trim()
+		.toLowerCase(),
 	password: z.string()
 		.min(1, "validation.fieldRequired")
 		.max(PASSWORD_MAX, "validation.passwordTooLong"),
@@ -47,6 +48,7 @@ export const registerSchema = z.object({
 		.min(USERNAME_MIN, "validation.usernameTooShort")
 		.max(USERNAME_MAX, "validation.usernameTooLong")
 		.trim()
+		.toLowerCase()
 		.transform(sanitize),
 	password: z.string()
 		.min(PASSWORD_MIN, "validation.passwordTooShort")

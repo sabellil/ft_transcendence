@@ -36,8 +36,8 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 		if (isGuest) {
 			return;
 		}
-		try { const d = await getGuildList(""); if (signal?.aborted) return; if (d) setGuilds(d); } catch {}
-		try { const d = await getDirectionalGuildRequests("", "outgoing"); if (signal?.aborted) return; if (d) setOutgoing(d as PendingGuild[]); } catch {}
+		try { const d = await getGuildList(); if (signal?.aborted) return; if (d) setGuilds(d); } catch {}
+		try { const d = await getDirectionalGuildRequests("outgoing"); if (signal?.aborted) return; if (d) setOutgoing(d as PendingGuild[]); } catch {}
 	};
 	useAbortableLoad(load, [isGuest]);
 
@@ -53,7 +53,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 			return;
 		}
 		try {
-			await createGuild("", name.trim());
+			await createGuild(name.trim());
 			setName("");
 			setSuccess(t("success.guildCreated"));
 			load();
@@ -71,7 +71,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 			return;
 		}
 		try {
-			await editGuild("", guildName, { name: editName.trim(), bannerFile: bannerFile || undefined });
+			await editGuild(guildName, { name: editName.trim(), bannerFile: bannerFile || undefined });
 			setEditTarget(null);
 			setEditName("");
 			setBannerFile(null);
@@ -86,7 +86,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 	async function handleDelete(guildName: string) {
 		setError(""); setSuccess("");
 		try {
-			await deleteGuild("", guildName);
+			await deleteGuild(guildName);
 			setSuccess(t("success.guildDeleted"));
 			load();
 		} catch (err: any) {
@@ -103,7 +103,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 			return;
 		}
 		try {
-			await createGuildRequest("", guildName, inviteName.trim());
+			await createGuildRequest(guildName, inviteName.trim());
 			setInviteName("");
 			setSuccess(t("success.requestSent"));
 			load();
@@ -116,7 +116,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 	async function handleJoin(guildName: string) {
 		setError(""); setSuccess("");
 		try {
-			await createGuildRequest("", guildName);
+			await createGuildRequest(guildName);
 			setSuccess(t("success.requestSent"));
 			load();
 		} catch (err: any) {
@@ -128,7 +128,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 	async function handleCancel(guildName: string, direction: Direction, username?: string) {
 		setError(""); setSuccess("");
 		try {
-			await removeGuildRequest("", guildName, direction, username);
+			await removeGuildRequest(guildName, direction, username);
 			setSuccess(direction === "outgoing" ? t("success.requestCancelled") : t("success.guildRequestRefused"));
 			load();
 		} catch (err: any) {
@@ -140,7 +140,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 	async function handleAccept(guildName: string, username: string) {
 		setError(""); setSuccess("");
 		try {
-			await acceptGuildRequest("", guildName, username);
+			await acceptGuildRequest(guildName, username);
 			setSuccess(t("success.memberAccepted"));
 			load();
 		} catch (err: any) {
@@ -152,7 +152,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 	async function handlePromote(guildName: string, username: string) {
 		setError(""); setSuccess("");
 		try {
-			await promoteOwner("", guildName, username);
+			await promoteOwner(guildName, username);
 			setSuccess(`${username}${t("success.promotedToOwner")}`);
 			load();
 		} catch (err: any) {
@@ -164,7 +164,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 	async function handleKick(guildName: string, username: string) {
 		setError(""); setSuccess("");
 		try {
-			await deleteGuildship("", guildName, username);
+			await deleteGuildship(guildName, username);
 			setSuccess(`${username}${t("success.memberRemoved")}`);
 			load();
 		} catch (err: any) {
@@ -176,7 +176,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 	async function handleDemote(guildName: string, username: string) {
 		setError(""); setSuccess("");
 		try {
-			await demoteOwner("", guildName, username);
+			await demoteOwner(guildName, username);
 			setSuccess(`${username}${t("success.steppedDown")}`);
 			load();
 		} catch (err: any) {
@@ -188,7 +188,7 @@ function GuildList({ isGuest, profile }: { isGuest: boolean; profile: Profile })
 	async function handleLeave(guildName: string) {
 		setError(""); setSuccess("");
 		try {
-			await leaveGuild("", guildName);
+			await leaveGuild(guildName);
 			setSuccess(`${t("success.leftGuild")}${guildName}`);
 			load();
 		} catch (err: any) {

@@ -13,6 +13,7 @@
   },
   "nav": {
     "friends": "Friends",
+    "messages": "Messages",
     "guilds": "Guilds"
   },
   "guilds": {
@@ -50,6 +51,11 @@
     "outgoing": "Outgoing requests",
     "sentRequest": "sent you a request!",
     "waiting": "Waiting to accept..."
+  },
+  "message": {
+    "title": "Messages",
+    "placeholder": "Message...",
+    "selectFriend": "Select a friend"
   },
   "guest": {
     "friends": "Create an account to connect with friends.",
@@ -218,11 +224,5 @@
     "invalidCardType": "Invalid card type",
     "fileTooLarge": "File too large (max 5 MB)",
     "invalidFileType": "Invalid file type (png, jpg, gif, webp)"
-  },
-  "GUEST_GUILDS": "Create an account to join or create guilds.",
-  "GUEST_INFO": "Create an account to unlock all features.",
-  "LEFT_GUILD": "Left ",
-  "LOADING": "Loading...",
-  "LOADING_PROFILE": "Loading...",
-  "NO_BLOCKED": "No blocked users"
+  }
 }

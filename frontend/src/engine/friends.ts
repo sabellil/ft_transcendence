@@ -7,8 +7,8 @@ import type { PublicUser, Direction, Ok } from "../constants.ts";
 
 
 
-// getFriendList — fetch all friends (first param ignored, cookie provides auth)
-export function getFriendList(_user?: string) {
+// getFriendList — fetch all friends (auth via cookie)
+export function getFriendList() {
 	return apiGet<PublicUser[]>(API_FRIEND);
 }
 
@@ -17,7 +17,7 @@ export function getFriendList(_user?: string) {
 
 
 // getDirectionalFriendRequests — fetch incoming or outgoing pending requests
-export function getDirectionalFriendRequests(_user: string, direction: Direction) {
+export function getDirectionalFriendRequests(direction: Direction) {
 	return apiGet<PublicUser[]>(`${API_FRIEND}/pending/${direction}`);
 }
 
@@ -26,7 +26,7 @@ export function getDirectionalFriendRequests(_user: string, direction: Direction
 
 
 // createFriendRequest — send friend request to user
-export function createFriendRequest(_user: string, username: string) {
+export function createFriendRequest(username: string) {
 	return apiPost<Ok>(`${API_FRIEND}/request/${(username)}`);
 }
 
@@ -35,7 +35,7 @@ export function createFriendRequest(_user: string, username: string) {
 
 
 // acceptFriendRequest — accept incoming friend request
-export function acceptFriendRequest(_user: string, username: string) {
+export function acceptFriendRequest(username: string) {
 	return apiPost<Ok>(`${API_FRIEND}/accept/${(username)}`);
 }
 
@@ -44,7 +44,7 @@ export function acceptFriendRequest(_user: string, username: string) {
 
 
 // removeFriendRequest — decline or cancel a pending request
-export function removeFriendRequest(_user: string, username: string, direction: Direction) {
+export function removeFriendRequest(username: string, direction: Direction) {
 	return apiPost<Ok>(`${API_FRIEND}/pending/${direction}/${(username)}`);
 }
 
@@ -53,7 +53,7 @@ export function removeFriendRequest(_user: string, username: string, direction: 
 
 
 // deleteUsership — unfriend a user
-export function deleteUsership(_user: string, username: string) {
+export function deleteUsership(username: string) {
 	return apiPost<Ok>(`${API_FRIEND}/remove/${(username)}`);
 }
 
@@ -62,7 +62,7 @@ export function deleteUsership(_user: string, username: string) {
 
 
 // getBlockList — fetch all blocked users
-export function getBlockList(_user?: string) {
+export function getBlockList() {
 	return apiGet<PublicUser[]>(API_BLOCK);
 }
 
@@ -71,7 +71,7 @@ export function getBlockList(_user?: string) {
 
 
 // createBlock — block a user
-export function createBlock(_user: string, username: string) {
+export function createBlock(username: string) {
 	return apiPost<Ok>(`${API_BLOCK}/${(username)}`);
 }
 
@@ -80,6 +80,6 @@ export function createBlock(_user: string, username: string) {
 
 
 // deleteBlock — unblock a user
-export function deleteBlock(_user: string, username: string) {
+export function deleteBlock(username: string) {
 	return apiPost<Ok>(`${API_BLOCK}/remove/${(username)}`);
 }

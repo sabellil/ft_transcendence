@@ -22,9 +22,9 @@ function FriendsList({ isGuest }: { isGuest: boolean }) {
 
 	const load = async (signal?: AbortSignal) => {
 		if (isGuest) return;
-		try { const d = await getFriendList(""); if (signal?.aborted) return; if (d) setFriends(d); } catch {}
-		try { const d = await getDirectionalFriendRequests("", "incoming"); if (signal?.aborted) return; if (d) setIncoming(d); } catch {}
-		try { const d = await getDirectionalFriendRequests("", "outgoing"); if (signal?.aborted) return; if (d) setOutgoing(d); } catch {}
+		try { const d = await getFriendList(); if (signal?.aborted) return; if (d) setFriends(d); } catch {}
+		try { const d = await getDirectionalFriendRequests("incoming"); if (signal?.aborted) return; if (d) setIncoming(d); } catch {}
+		try { const d = await getDirectionalFriendRequests("outgoing"); if (signal?.aborted) return; if (d) setOutgoing(d); } catch {}
 	};
 	useAbortableLoad(load, [isGuest]);
 
@@ -34,7 +34,7 @@ function FriendsList({ isGuest }: { isGuest: boolean }) {
 		const parsed = usernameSchema.safeParse(friendName);
 		if (!parsed.success) { setError(parsed.error.issues[0]!.message); return; }
 		try {
-			await createFriendRequest("", friendName.trim());
+			await createFriendRequest(friendName.trim());
 			setFriendName("");
 			setSuccess(t("success.friendRequestSent"));
 			load();
@@ -44,7 +44,7 @@ function FriendsList({ isGuest }: { isGuest: boolean }) {
 	async function handleAccept(username: string) {
 		setError(""); setSuccess("");
 		try {
-			await acceptFriendRequest("", username);
+			await acceptFriendRequest(username);
 			setSuccess(`${username} ${t("success.friendAccepted")}`);
 			load();
 		} catch (err: any) { setError(err.message); }
@@ -53,7 +53,7 @@ function FriendsList({ isGuest }: { isGuest: boolean }) {
 	async function handleRemove(username: string, direction: Direction) {
 		setError(""); setSuccess("");
 		try {
-			await removeFriendRequest("", username, direction);
+			await removeFriendRequest(username, direction);
 			setSuccess(direction === "outgoing" ? t("success.requestCancelled") : t("success.requestRefused"));
 			load();
 		} catch (err: any) { setError(err.message); }
@@ -62,7 +62,7 @@ function FriendsList({ isGuest }: { isGuest: boolean }) {
 	async function handleDelete(username: string) {
 		setError(""); setSuccess("");
 		try {
-			await deleteUsership("", username);
+			await deleteUsership(username);
 			setSuccess(`${username} ${t("success.friendRemoved")}`);
 			load();
 		} catch (err: any) { setError(err.message); }

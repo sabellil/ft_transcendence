@@ -45,8 +45,8 @@ const COOKIE_OPTS = {
 
 // loginUser — verify credentials with timing-safe dummy hash comparison
 async function loginUser(username: string, password: string) {
-	// findUnique — resolve username to user record
-	const user = await prisma.user.findUnique({ where: { username } });
+	// findUnique — resolve username to user record (case-insensitive)
+	const user = await prisma.user.findUnique({ where: { username: username.toLowerCase() } });
 
 	// !user → dummy compare then reject
 	if (!user) {
@@ -131,7 +131,7 @@ async function authRoutes(app: FastifyInstance) {
 		await logoutUser(user.username);
 
 		// clearCookie — remove JWT cookie from client
-		reply.clearCookie("token", { path: "/" });
+		reply.clearCookie("token", { path: "/", secure: true, sameSite: "strict" });
 
 		return { success: true };
 	}));

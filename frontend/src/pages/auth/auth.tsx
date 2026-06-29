@@ -1,8 +1,7 @@
 import { useState } from "react";
 import "./auth.scss";
 import { useT } from "../../language.tsx";
-import { createUser } from "../../engine/users.ts";
-import { loginUser } from "../../engine/auth.ts";
+import { registerUser, loginUser } from "../../engine/auth.ts";
 import { usernameSchema, passwordSchema, emailSchema } from "../../validation.ts";
 
 
@@ -34,7 +33,7 @@ function AuthForm({ onLogin, onGuestEnter, onLegalClick }: Props) {
 		result = passwordSchema.safeParse(password);
 		if (!result.success) { setError(result.error!.issues[0]!.message); return; }
 		try {
-			await createUser(email, username, password);
+			await registerUser(email, username, password);
 			setShowRegister(false);
 			setPassword("");
 			setSuccess(t("success.registrationComplete"));

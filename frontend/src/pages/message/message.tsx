@@ -20,7 +20,7 @@ function MessagePage({ isGuest }: { isGuest: boolean }) {
 	const load = async (signal?: AbortSignal) => {
 		if (isGuest) return;
 		try {
-			const d = await getFriendList("");
+			const d = await getFriendList();
 			if (signal?.aborted) return;
 			if (d) setFriends(d);
 		} catch {}
@@ -60,15 +60,15 @@ function MessagePage({ isGuest }: { isGuest: boolean }) {
 	if (isGuest) {
 		return (
 			<div className="message-panel">
-				<h2 className="message-title">Messages</h2>
-				<p>{t("guest.message")}</p>
+				<h2 className="message-title">{t("message.title")}</h2>
+				<p>{t("guest.info")}</p>
 			</div>
 		);
 	}
 
 	return (
 		<div className="message-panel">
-			<h2 className="message-title">Messages</h2>
+			<h2 className="message-title">{t("message.title")}</h2>
 
 			<div className="message-layout">
 				<div className="message-friends">
@@ -112,7 +112,7 @@ function MessagePage({ isGuest }: { isGuest: boolean }) {
 								<input
 									type="text"
 									value={content}
-									placeholder="Message..."
+									placeholder={t("message.placeholder")}
 									onChange={e => setContent(e.target.value)}
 									onKeyDown={e => {
 										if (e.key === "Enter") handleSend();
@@ -122,7 +122,7 @@ function MessagePage({ isGuest }: { isGuest: boolean }) {
 							</div>
 						</>
 					) : (
-						<p>Select a friend</p>
+						<p>{t("message.selectFriend")}</p>
 					)}
 				</div>
 			</div>

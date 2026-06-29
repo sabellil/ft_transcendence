@@ -281,25 +281,23 @@ async function buildGuildViews(guilds: { id: number; name: string; banner: strin
 		allShips = await prisma.guildship.findMany({ where: { id: { in: allShipIds } } });
 	}
 
-	// group guildships by guild id for fast lookup
+	// group guildships by guild id for fast lookup — pre-index allShips by id then single pass per guild
+	const shipById = new Map<number, typeof allShips[number]>();
+	for (const s of allShips) {
+		shipById.set(s.id, s);
+	}
 	const shipsByGuild = new Map<number, typeof allShips>();
 	for (const g of guilds) {
 		const ships: typeof allShips = [];
-		for (const s of allShips) {
-			if (g.guildshipIds.includes(s.id)) {
-				ships.push(s);
-			}
+		for (const id of g.guildshipIds) {
+			const s = shipById.get(id);
+			if (s) ships.push(s);
 		}
 		shipsByGuild.set(g.id, ships);
 	}
 
-	// collect all unique user ids referenced
-	const userIds: number[] = [];
-	for (const s of allShips) {
-		if (!userIds.includes(s.userId)) {
-			userIds.push(s.userId);
-		}
-	}
+	// collect all unique user ids referenced (Set for O(n) dedup)
+	const userIds = [...new Set(allShips.map(s => s.userId))];
 
 	// findMany — load all users in one query
 	let allUsers: { id: number; username: string; avatar: string; status: UserStatus }[] = [];
@@ -922,9 +920,10 @@ async function guildsRoutes(app: FastifyInstance) {
 		const { name: guildName, direction, username } = request.params as {
 			name: string; direction: "incoming" | "outgoing"; username: string;
 		};
-		// direction === outgoing → cancel my own join request
+		// direction === outgoing → resolve "me" shorthand or use explicit username
 		if (direction === "outgoing") {
-			return await removeGuildRequest(guildName, request.user.username, "outgoing");
+			const target = username === "me" ? request.user.username : username;
+			return await removeGuildRequest(guildName, target, "outgoing");
 		}
 		// !isGuildOwner → not guild owner, reject
 		if (!(await isGuildOwner(guildName, request.user.id))) {

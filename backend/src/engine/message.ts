@@ -4,7 +4,9 @@ import type { FastifyInstance } from "fastify";
 import type { Prisma } from "@prisma/client";
 
 
-import { requireAuth, wrapHandler } from "../middleware.ts";
+import { requireAuth, wrapHandler, validateBody } from "../middleware.ts";
+
+import { createMessageSchema } from "../validation.ts";
 
 import { prisma, PAGINATION_DEFAULT, PAGINATION_MAX, MESSAGE_MAX} from "../constants.ts";
 
@@ -43,7 +45,9 @@ async function getConversation(username: string, friendUsername: string, limit?:
 	const friend = await checkAreFriends(username, friendUsername);
 	const me = await loadMessageUser({ username });
 	const friendData = await loadMessageUser({ id: friend.id });
-	const sharedMessageIds = me.messageIds.filter(id => friendData.messageIds.includes(id));
+	// use Set for O(n+m) intersection instead of O(n×m)
+	const friendMessageIdSet = new Set(friendData.messageIds);
+	const sharedMessageIds = me.messageIds.filter(id => friendMessageIdSet.has(id));
 	// if no shared messages, return empty array
 	if (!sharedMessageIds.length) {
 		return [];
@@ -108,11 +112,12 @@ async function messagesRoutes(app: FastifyInstance) {
 
 		return await getConversation(request.user.username, username, l, o);
 	}));
-	app.post("/:username", wrapHandler(async (request) => {
+	app.post("/:username", wrapHandler(async (request, reply) => {
 		const { username } = request.params as { username: string };
-		const body = request.body as { content?: string };
-
-		return await createMessage(request.user.username, username, body.content || "");
+		// validateBody — parse and validate message content
+		const body = validateBody(createMessageSchema, request.body, reply);
+		if (!body) return;
+		return await createMessage(request.user.username, username, body.content);
 	}));
 
 }

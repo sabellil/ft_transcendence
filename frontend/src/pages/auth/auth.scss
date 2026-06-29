@@ -2,6 +2,7 @@
 
 $primary: #b997ff;
 $secondary: #fec4ff;
+$secondary-dark: #e3a5e5;
 $light: #F7EBFF;
 
 
@@ -118,7 +119,7 @@ $light: #F7EBFF;
 	text-decoration: underline;
 
 	&:hover {
-		color: darken($secondary, 10%);
+		color: $secondary-dark;
 	}
 }
 

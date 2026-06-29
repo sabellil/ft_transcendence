@@ -191,6 +191,7 @@ Guild-only operations:
 | `POST /api/guild`                         | Create guild |
 | `POST /api/guild/:name`                   | Edit guild (name/banner) |
 | `POST /api/guild/:name/remove`            | Delete guild (cascade) |
+| `GET  /api/guild/:name/pending/:direction` | Pending requests for a specific guild |
 
 Remaining endpoints:
 
@@ -199,6 +200,7 @@ Remaining endpoints:
 | `/api/auth`   | `POST /register`, `POST /login`, `POST /logout` |
 | `/api/user`   | `GET /` (own profile), `GET /:username`, `POST /` (edit / avatar), `POST /remove` (delete cascade) |
 | `/api/block`  | `GET /`, `POST /:username` (block), `POST /remove/:username` (unblock) |
+| `/api/message`| `GET /:username` (conversation), `POST /:username` (send message) |
 | `/api/card`   | `GET /`, `GET /:name`, `POST /`, `POST /:name`, `POST /:name/remove` — mutations admin-only |
 
 All list endpoints support `?limit=N&offset=M` pagination (default 50, max 200).
@@ -268,7 +270,7 @@ All list endpoints support `?limit=N&offset=M` pagination (default 50, max 200).
 ## Database schema
 
 ```
-User              (id, email, username, password, avatar, status, role,
+User              (id, email, username, password, avatar, status, role, language,
                    usershipIds[], cardshipIds[], cardshipExchangeIds[], messageIds[])
 Usership          (id, userId, status)
 Guild             (id, name, banner, guildshipIds[])
@@ -290,7 +292,7 @@ Message           (id, userId, content, time)
 | CardshipStatus | `Unpossessed`, `Possessed`, `Wanted`, `Available` |
 | CardshipExchangeStatus | `ExchangePending`, `ExchangeRequested` |
 | CardRarity | `Common`, `Uncommon`, `Rare`, `Legendary` |
-| CardType | `Normal`, `Water`, `Fire`, `Grass`, `Electric`, `Fighting`, `Psychic`, `Darkness`, `Metal`, `Dragon` |
+| CardType | `None`, `Normal`, `Fire`, `Water`, `Electric`, `Grass`, `Ice`, `Fighting`, `Poison`, `Ground`, `Flying`, `Psychic`, `Bug`, `Rock`, `Ghost`, `Dragon` |
 
 ### Friendship System Rules
 
@@ -302,6 +304,7 @@ Message           (id, userId, content, time)
 6. **Block Prevents Incoming** — blocked user tries to send request → their row deleted, block persists
 7. **Block Prevents Outgoing** — blocker tries to send to blocked → no new row, block persists
 8. **Block Overwrites Friendship** — block while friends → A: status=Blocked, B: Friend row deleted
+9. **Bidirectional Pending** — both users request each other → both sides show as Pending; either user accepting flips ALL rows to Friend
 
 ### Guild System Rules
 

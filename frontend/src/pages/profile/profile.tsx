@@ -39,7 +39,7 @@ function ProfilePage({ profile, onProfileUpdate, isGuest }: Props) {
 	const loadBlocked = async (signal?: AbortSignal) => {
 		if (isGuest) { setLoadingBlocked(false); return; }
 		try {
-			const data = await getBlockList("");
+			const data = await getBlockList();
 			if (signal?.aborted) return;
 			if (data) setBlocked(data);
 		} catch {} finally {
@@ -51,7 +51,7 @@ function ProfilePage({ profile, onProfileUpdate, isGuest }: Props) {
 
 	async function handleUnblock(username: string) {
 		setBlockError(""); setBlockSuccess("");
-		try { await deleteBlock("", username); setBlockSuccess(`${username}${t("success.userUnblocked")}`); loadBlocked(); }
+		try { await deleteBlock(username); setBlockSuccess(`${username}${t("success.userUnblocked")}`); loadBlocked(); }
 		catch (err: any) { setBlockError(err.message); }
 	}
 
@@ -59,7 +59,7 @@ function ProfilePage({ profile, onProfileUpdate, isGuest }: Props) {
 		setBlockError(""); setBlockSuccess("");
 		const parsed = usernameSchema.safeParse(blockName);
 		if (!parsed.success) { setBlockError(parsed.error.issues[0]!.message); return; }
-		try { await createBlock("", blockName.trim()); setBlockName(""); setBlockSuccess(`${blockName.trim()}${t("success.userBlocked")}`); loadBlocked(); }
+		try { await createBlock(blockName.trim()); setBlockName(""); setBlockSuccess(`${blockName.trim()}${t("success.userBlocked")}`); loadBlocked(); }
 		catch (err: any) { setBlockError(err.message); }
 	}
 
@@ -73,7 +73,7 @@ function ProfilePage({ profile, onProfileUpdate, isGuest }: Props) {
 		if (email !== profile.email)       { const r = emailSchema.safeParse(email);       if (!r.success) { setProfileError(r.error!.issues[0]!.message); return; } }
 		if (password)                       { const r = passwordSchema.safeParse(password); if (!r.success) { setProfileError(r.error!.issues[0]!.message); return; } }
 		try {
-			const updated = await editUser("", {
+			const updated = await editUser({
 				username: username !== profile.username ? username : undefined,
 				email:    email !== profile.email       ? email    : undefined,
 				password: password || undefined,
@@ -93,7 +93,7 @@ function ProfilePage({ profile, onProfileUpdate, isGuest }: Props) {
 	async function handleDeleteAccount() {
 		if (!confirm(t("profile.confirmDelete"))) return;
 		setProfileError(""); setProfileSuccess("");
-		try { await deleteUser(""); sessionStorage.removeItem("view"); window.location.reload(); }
+		try { await deleteUser(); sessionStorage.removeItem("view"); window.location.reload(); }
 		catch (err: any) { setProfileError(err.message); }
 	}
 

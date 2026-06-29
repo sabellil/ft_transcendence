@@ -113,7 +113,7 @@ import("./app.scss");
 
 		// ---- auth handlers ----
 
-		const handleLogin  = useCallback(async () => { setIsGuest(false); const p = await getUser(); if (p) setProfile(p); }, []);
+		const handleLogin  = useCallback(async (_token?: string) => { setIsGuest(false); const p = await getUser(); if (p) setProfile(p); }, []);
 		const handleLogout = useCallback(async () => {
 			await logoutUser().catch(() => {});
 			sessionStorage.removeItem("view");
@@ -146,7 +146,7 @@ import("./app.scss");
 					<div className="nav-bar">
 						<div className="nav-inner">
 							<button className="nav-btn" onClick={() => nav("friends")}>{t("nav.friends")}</button>
-							<button className="nav-btn" onClick={() => nav("message")}>Messages</button>
+							<button className="nav-btn" onClick={() => nav("message")}>{t("nav.messages")}</button>
 							<button className="nav-btn" onClick={() => nav("guilds")}>{t("nav.guilds")}</button>
 							<div className="profile-corner" onClick={() => nav("profile")}>
 								<span className="profile-name">{sanitizeUsername(profile.username)}</span>
@@ -186,6 +186,17 @@ import("./app.scss");
 		</>);
 	}
 
+	// CardGrid — standalone component (outside App to avoid remounts on state change)
+	function CardGrid() {
+		const [cards, setCards] = useState([]);
+		useEffect(() => {
+			fetch(API_CARD).then(r => r.ok ? r.json() : []).then(setCards).catch(() => {});
+		}, []);
+		return cards.map((c: any) => (
+			<img key={c.name} className="card-img" src={assetUrl(c.image)} alt={c.name} title={c.name} />
+		));
+	}
+
 
 
 
@@ -193,16 +204,6 @@ import("./app.scss");
 	// ---- mount ----
 
 	
-			function CardGrid() {
-				const [cards, setCards] = useState([]);
-				useEffect(() => {
-					fetch(API_CARD).then(r => r.ok ? r.json() : []).then(setCards).catch(() => {});
-				}, []);
-				return cards.map((c: any) => (
-					<img key={c.name} className="card-img" src={assetUrl(c.image)} alt={c.name} title={c.name} />
-				));
-			}
-
 
 			createRoot(document.getElementById("root")!).render(<StrictMode><ErrorBoundary><I18nProvider><App /></I18nProvider></ErrorBoundary></StrictMode>);
 })();

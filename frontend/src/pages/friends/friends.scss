@@ -1,6 +1,7 @@
 // ---- tokens ----
 
 $primary: #b997ff;
+$primary-dark: #9e7ce6;
 
 
 
@@ -59,7 +60,7 @@ $primary: #b997ff;
 		white-space: nowrap;
 
 		&:hover {
-			background: darken($primary, 8%);
+			background: $primary-dark;
 		}
 	}
 }

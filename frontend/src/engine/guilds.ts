@@ -7,8 +7,8 @@ import type { GuildView, PublicUser, PendingGuild, Ok, Direction } from "../cons
 
 
 
-// getGuildList — all guilds paginated (first param ignored, cookie provides auth)
-export function getGuildList(_user?: string) {
+// getGuildList — all guilds paginated (auth via cookie)
+export function getGuildList() {
 	return apiGet<GuildView[]>(API_GUILD);
 }
 
@@ -17,7 +17,7 @@ export function getGuildList(_user?: string) {
 
 
 // getGuild — single guild with members/pending
-export function getGuild(_user: string, guildName: string) {
+export function getGuild(guildName: string) {
 	return apiGet<GuildView>(`${API_GUILD}/${(guildName)}`);
 }
 
@@ -26,7 +26,7 @@ export function getGuild(_user: string, guildName: string) {
 
 
 // getDirectionalGuildRequests — pending requests across all owned guilds (incoming/outgoing)
-export function getDirectionalGuildRequests(_user: string, direction: Direction) {
+export function getDirectionalGuildRequests(direction: Direction) {
 	return apiGet<(PendingGuild | PublicUser)[]>(`${API_GUILD}/pending/${direction}`);
 }
 
@@ -35,7 +35,7 @@ export function getDirectionalGuildRequests(_user: string, direction: Direction)
 
 
 // createGuild — create guild with creator as first owner
-export async function createGuild(_user: string, name: string): Promise<Ok> {
+export async function createGuild(name: string): Promise<Ok> {
 	const res = await fetch(API_GUILD, authOpts({ json: { name } }));
 	const data = await res.json();
 	if (!res.ok) throw new Error(data.error || "error.createGuildFailed");
@@ -47,7 +47,7 @@ export async function createGuild(_user: string, name: string): Promise<Ok> {
 
 
 // editGuild — owner-only: update name or banner
-export async function editGuild(_user: string, guildName: string, body: { name?: string; bannerFile?: File }) {
+export async function editGuild(guildName: string, body: { name?: string; bannerFile?: File }) {
 	const url = `${API_GUILD}/${(guildName)}`;
 	const { bannerFile, ...jsonFields } = body;
 	const res = bannerFile
@@ -63,7 +63,7 @@ export async function editGuild(_user: string, guildName: string, body: { name?:
 
 
 // deleteGuild — owner-only: cascade delete all guildships
-export function deleteGuild(_user: string, guildName: string) {
+export function deleteGuild(guildName: string) {
 	return apiPost<Ok>(`${API_GUILD}/${(guildName)}/remove`);
 }
 
@@ -72,7 +72,7 @@ export function deleteGuild(_user: string, guildName: string) {
 
 
 // createGuildRequest — send join request (self) or owner invite [Rule 1/2]
-export function createGuildRequest(_user: string, guildName: string, username?: string) {
+export function createGuildRequest(guildName: string, username?: string) {
 	return apiPost<Ok>(`${API_GUILD}/${(guildName)}/request/${username ? (username) : "me"}`);
 }
 
@@ -81,7 +81,7 @@ export function createGuildRequest(_user: string, guildName: string, username?: 
 
 
 // removeGuildRequest — cancel or refuse pending request [Rule 4/6]
-export function removeGuildRequest(_user: string, guildName: string, direction: Direction, username?: string) {
+export function removeGuildRequest(guildName: string, direction: Direction, username?: string) {
 	const target = direction === "outgoing" ? "me" : (username ?? "");
 	return apiPost<Ok>(`${API_GUILD}/${(guildName)}/pending/${direction}/${target}`);
 }
@@ -91,7 +91,7 @@ export function removeGuildRequest(_user: string, guildName: string, direction: 
 
 
 // acceptGuildRequest — pending → member [Rule 3/5]
-export function acceptGuildRequest(_user: string, guildName: string, username: string) {
+export function acceptGuildRequest(guildName: string, username: string) {
 	return apiPost<Ok>(`${API_GUILD}/${(guildName)}/accept/${(username)}`);
 }
 
@@ -100,7 +100,7 @@ export function acceptGuildRequest(_user: string, guildName: string, username: s
 
 
 // promoteOwner — member → owner [Rule 8]
-export function promoteOwner(_user: string, guildName: string, username: string) {
+export function promoteOwner(guildName: string, username: string) {
 	return apiPost<Ok>(`${API_GUILD}/${(guildName)}/promote/${(username)}`);
 }
 
@@ -109,7 +109,7 @@ export function promoteOwner(_user: string, guildName: string, username: string)
 
 
 // demoteOwner — owner → member, last owner protected [Rule 9]
-export function demoteOwner(_user: string, guildName: string, username: string) {
+export function demoteOwner(guildName: string, username: string) {
 	return apiPost<Ok>(`${API_GUILD}/${(guildName)}/demote/${(username)}`);
 }
 
@@ -118,7 +118,7 @@ export function demoteOwner(_user: string, guildName: string, username: string) 
 
 
 // leaveGuild — self-removal with last-owner guard [Rule 7]
-export function leaveGuild(_user: string, guildName: string) {
+export function leaveGuild(guildName: string) {
 	return apiPost<Ok>(`${API_GUILD}/${(guildName)}/leave`);
 }
 
@@ -127,6 +127,6 @@ export function leaveGuild(_user: string, guildName: string) {
 
 
 // deleteGuildship — owner kicks member with last-owner guard [Rule 7]
-export function deleteGuildship(_user: string, guildName: string, username: string) {
+export function deleteGuildship(guildName: string, username: string) {
 	return apiPost<Ok>(`${API_GUILD}/${(guildName)}/remove/${(username)}`);
 }

@@ -13,6 +13,7 @@
   },
   "nav": {
     "friends": "Amis",
+    "messages": "Messages",
     "guilds": "Guildes"
   },
   "guilds": {
@@ -50,6 +51,11 @@
     "outgoing": "Demandes envoyées",
     "sentRequest": "vous a envoyé une demande !",
     "waiting": "En attente d'acceptation..."
+  },
+  "message": {
+    "title": "Messages",
+    "placeholder": "Message...",
+    "selectFriend": "Sélectionnez un ami"
   },
   "guest": {
     "friends": "Créez un compte pour vous connecter avec des amis.",
@@ -218,11 +224,5 @@
     "invalidCardType": "Type de carte invalide",
     "fileTooLarge": "Fichier trop volumineux (max 5 Mo)",
     "invalidFileType": "Type de fichier invalide (png, jpg, gif, webp)"
-  },
-  "GUEST_GUILDS": "Créez un compte pour rejoindre ou créer des guildes.",
-  "GUEST_INFO": "Créez un compte pour débloquer toutes les fonctionnalités.",
-  "LEFT_GUILD": "A quitté ",
-  "LOADING": "Chargement...",
-  "LOADING_PROFILE": "Chargement...",
-  "NO_BLOCKED": "Aucun utilisateur bloqué"
+  }
 }

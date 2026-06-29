@@ -48,6 +48,40 @@ const BACKEND_PORT = "3000";
 
 
 
+// ---- rate limiter ----
+
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX_STATIC = 600;          // 600 requests/min for static files
+const RATE_MAX_API    = 600;          // 600 requests/min for proxied API calls
+const ipHits = new Map<string, number[]>();
+
+function rateLimit(ip: string, max: number): boolean {
+	const now = Date.now();
+	const cutoff = now - RATE_WINDOW_MS;
+	let hits = ipHits.get(ip);
+	if (!hits) {
+		ipHits.set(ip, [now]);
+		return true;
+	}
+	// evict stale entries
+	hits = hits.filter(t => t > cutoff);
+	hits.push(now);
+	ipHits.set(ip, hits);
+	return hits.length <= max;
+}
+
+// periodic cleanup — purge stale IP entries every 2 minutes
+setInterval(() => {
+	const cutoff = Date.now() - RATE_WINDOW_MS;
+	for (const [ip, hits] of ipHits) {
+		const fresh = hits.filter(t => t > cutoff);
+		if (fresh.length) ipHits.set(ip, fresh);
+		else ipHits.delete(ip);
+	}
+}, 120_000).unref();
+
+
+
 
 
 // ---- proxy helpers ----
@@ -90,13 +124,26 @@ function proxyToBackend(req: any, res: any, apiPath: string) {
 
 // ---- create server ----
 
-// createServer — HTTPS server with proxy + static file serving
+// createServer — HTTPS server with proxy + static file serving + rate limiting
 const server = https.createServer(
 	{ key: fs.readFileSync(keyPath), cert: fs.readFileSync(certPath) },
 	async (req, res) => {
+		// extract client IP (respect X-Forwarded-For in Docker network)
+		const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim()
+			|| req.socket.remoteAddress
+			|| "127.0.0.1";
 		const reqUrl = new URL(req.url ?? "/", `https://${req.headers.host ?? "localhost"}`);
+		const isApiPath = reqUrl.pathname.startsWith("/api/") || reqUrl.pathname.startsWith("/uploads/");
+
+		// rate-limit: different limits for API vs static paths
+		if (!rateLimit(ip, isApiPath ? RATE_MAX_API : RATE_MAX_STATIC)) {
+			res.writeHead(429, { "Content-Type": "application/json" });
+			res.end(JSON.stringify({ error: "error.tooManyRequests" }));
+			return;
+		}
+
 		// /api/ or /uploads/ → proxy to backend
-		if (reqUrl.pathname.startsWith("/api/") || reqUrl.pathname.startsWith("/uploads/")) {
+		if (isApiPath) {
 			proxyToBackend(req, res, reqUrl.pathname + reqUrl.search);
 			return;
 		}

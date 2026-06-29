@@ -17,8 +17,8 @@
 // 8. Block Overwrites Friendship — block while friends:
 //    → User A: status→Blocked, User B's Friend row deleted
 // 9. Bidirectional Pending — B requests A while A already requested B:
-//    → sender creates Pending row, receiver's Requested flips to Pending
-//    → both sides now have Pending rows, either user can accept
+//    → B's existing Requested flips to Pending (both sides now Pending)
+//    → either user can accept, which flips ALL rows to Friend
 
 
 import type { FastifyInstance } from "fastify";
@@ -281,8 +281,17 @@ async function createFriendRequest(username: string, receiverUsername: string) {
 			if (existingRow.status === UsershipStatus.Friend) {
 				throw new Error("error.alreadyFriends");
 			}
-			// Pending or Requested → receiver already has a request toward sender
-			// → create bidirectional: sender gets Pending too, both can accept
+			// Pending or Requested → receiver already has a request toward sender [Rule 9]
+			// flip sender's Requested → Pending so both sides are Pending (no duplicate rows)
+			if (existingRow.status === UsershipStatus.Pending || existingRow.status === UsershipStatus.Requested) {
+				if (senderExisting && senderExisting.status === UsershipStatus.Requested) {
+					await tx.usership.update({
+						where: { id: senderExisting.id },
+						data:  { status: UsershipStatus.Pending },
+					});
+				}
+				return { success: true };
+			}
 		}
 
 		// create — sender Pending row [Rule 1]
@@ -295,26 +304,15 @@ async function createFriendRequest(username: string, receiverUsername: string) {
 			data:  { usershipIds: { push: senderRow.id } },
 		});
 
-		// receiver already has Requested row from sender's previous request?
-		// → update it to Pending too (bidirectional), otherwise create new Requested
-		const receiverRequested = receiverRows.find(r => r.status === UsershipStatus.Requested);
-		if (receiverRequested) {
-			// flip receiver's Requested → Pending (bidirectional)
-			await tx.usership.update({
-				where: { id: receiverRequested.id },
-				data:  { status: UsershipStatus.Pending },
-			});
-		} else {
-			// create — receiver Requested row [Rule 1]
-			const receiverRow = await tx.usership.create({
-				data: { userId: sender.id, status: UsershipStatus.Requested },
-			});
-			// update — push receiver's row to usershipIds array
-			await tx.user.update({
-				where: { id: receiver.id },
-				data:  { usershipIds: { push: receiverRow.id } },
-			});
-		}
+		// create — receiver Requested row [Rule 1]
+		const receiverRow = await tx.usership.create({
+			data: { userId: sender.id, status: UsershipStatus.Requested },
+		});
+		// update — push receiver's row to usershipIds array
+		await tx.user.update({
+			where: { id: receiver.id },
+			data:  { usershipIds: { push: receiverRow.id } },
+		});
 
 		return { success: true };
 	});
@@ -360,41 +358,37 @@ async function getDirectionalFriendRequests(username: string, direction: "incomi
 
 
 
-// acceptFriendRequest — both sides flip to Friend status
+// acceptFriendRequest — flip ALL Pending/Requested rows between both users to Friend
 async function acceptFriendRequest(username: string, senderUsername: string) {
 	// $transaction — prevent race conditions: all queries succeed or none
 	return prisma.$transaction(async (tx) => {
 		// lookupUser — resolve sender username
 		const sender = await lookupUser(senderUsername);
-		// loadUsershipUser — load accepter's usership data
+		// loadUsershipUser — load both users' usership data
 		const accepter = await loadUsershipUser({ username }, tx);
-
-		// findUsershipRow — find incoming row (Requested from normal flow, or Pending from bidirectional)
-		const incomingRow = await findUsershipRow(accepter, sender.id, UsershipStatus.Requested, tx)
-			|| await findUsershipRow(accepter, sender.id, UsershipStatus.Pending, tx);
-		// !incomingRow → no pending relationship, reject [Rule 2]
-		if (!incomingRow) {
-			throw new Error("error.noPendingFromUser");
-		}
-
-		// loadUsershipUser — load sender's usership data
 		const senderData = await loadUsershipUser({ id: sender.id }, tx);
-		// findUsershipRow — find outgoing row (Pending from normal flow, or Requested from reverse)
-		const outgoingRow = await findUsershipRow(senderData, accepter.id, UsershipStatus.Pending, tx)
-			|| await findUsershipRow(senderData, accepter.id, UsershipStatus.Requested, tx);
-		// !outgoingRow → no outgoing pending row, reject [Rule 2]
-		if (!outgoingRow) {
+
+		// findMany — find ALL Pending/Requested rows between both users (handles legacy duplicates)
+		const allRows = await tx.usership.findMany({
+			where: {
+				id: { in: [...accepter.usershipIds, ...senderData.usershipIds] },
+				status: { in: [UsershipStatus.Pending, UsershipStatus.Requested] },
+			},
+		});
+
+		// filter to rows actually between these two users
+		const relevantRows = allRows.filter(
+			r => (r.userId === sender.id || r.userId === accepter.id)
+		);
+
+		// !relevantRows.length → no pending relationship, reject [Rule 2]
+		if (!relevantRows.length) {
 			throw new Error("error.noPendingFromUser");
 		}
 
-		// update — flip incoming to Friend [Rule 2]
-		await tx.usership.update({
-			where: { id: incomingRow.id },
-			data:  { status: UsershipStatus.Friend },
-		});
-		// update — flip outgoing to Friend [Rule 2]
-		await tx.usership.update({
-			where: { id: outgoingRow.id },
+		// flip ALL relevant rows to Friend in one update
+		await tx.usership.updateMany({
+			where: { id: { in: relevantRows.map(r => r.id) } },
 			data:  { status: UsershipStatus.Friend },
 		});
 
