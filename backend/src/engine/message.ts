@@ -20,10 +20,10 @@ import { UsershipStatus } from "@prisma/client";
 async function loadMessageUser(
 where: Prisma.UserWhereUniqueInput,
 	tx: Prisma.TransactionClient | typeof prisma = prisma,
-): Promise<{ id: number; username: string; messageIds: number[]; usershipIds: number[] }> {
+): Promise<{ id: number; username: string; messageIds: number[]; usershipIds: number[]; readMessageIds: number[] }> {
 	const user = await tx.user.findUnique({
 		where,
-		select: { id: true, username: true, messageIds: true, usershipIds: true,},
+		select: { id: true, username: true, messageIds: true, usershipIds: true, readMessageIds: true, },
 	});
 	// if user is not found, throw an error
 	if (!user) { throw new Error("error.userNotFound");}
@@ -67,6 +67,59 @@ async function getConversation(username: string, friendUsername: string, limit?:
 }));
 }
 
+// markConversationRead - mark all shared messages with a friend as read
+async function markConversationRead(username: string, friendUsername: string) {
+	const friend = await checkAreFriends(username, friendUsername);
+	const me = await loadMessageUser({ username });
+	const friendData = await loadMessageUser({ id: friend.id });
+
+	const sharedMessageIds = me.messageIds.filter(id => friendData.messageIds.includes(id));
+	const unreadIds = sharedMessageIds.filter(id => !me.readMessageIds.includes(id));
+
+	if (!unreadIds.length) {
+		return { success: true };
+	}
+
+	await prisma.user.update({
+		where: { id: me.id },
+		data: {
+			readMessageIds: {
+				push: unreadIds,
+			},
+		},
+	});
+
+	return { success: true };
+}
+
+// getUnreadCounts - count unread messages for each friend conversation
+async function getUnreadCounts(username: string) {
+	const me = await loadMessageUser({ username });
+	const readSet = new Set(me.readMessageIds);
+	const rows = await prisma.usership.findMany({
+		where: {
+			id: { in: me.usershipIds },
+			status: UsershipStatus.Friend,
+		},
+		select: { userId: true },
+	});
+	const result = [];
+	for (const row of rows) {
+		const friend = await loadMessageUser({ id: row.userId });
+		const friendMessageSet = new Set(friend.messageIds);
+
+		const unreadCount = me.messageIds.filter(id =>
+			friendMessageSet.has(id) && !readSet.has(id)
+		).length;
+
+		result.push({
+			username: friend.username,
+			unreadCount,
+		});
+	}
+
+	return result;
+}
 // createMessage - Create a new message and attach it to both user
 async function createMessage(username: string, friendUsername: string, content: string) {
 	if (content.length > MESSAGE_MAX) { throw new Error("error.messageTooLong");}
@@ -87,7 +140,7 @@ async function createMessage(username: string, friendUsername: string, content: 
 		// update both users to include the new message id
 		await tx.user.update({
 			where: { id: me.id },
-			data: { messageIds: { push: message.id } },
+			data: { messageIds: { push: message.id }, readMessageIds: { push: message.id } },
 		});
 		await tx.user.update({
 			where: { id: friendData.id },
@@ -103,6 +156,11 @@ async function createMessage(username: string, friendUsername: string, content: 
 // messageRoutes - register all chat endpoint with auth prehandler
 async function messagesRoutes(app: FastifyInstance) {
 	app.addHook("preHandler", requireAuth);// all routes require auth
+
+	app.get("/unread", wrapHandler(async (request) => {
+	return await getUnreadCounts(request.user.username);
+	}));
+
 	app.get("/:username", wrapHandler(async (request) => {// get all messages between the logged in user and the friend
 		const { username } = request.params as { username: string };
 		const { limit, offset } = request.query as { limit?: string; offset?: string };
@@ -112,6 +170,13 @@ async function messagesRoutes(app: FastifyInstance) {
 
 		return await getConversation(request.user.username, username, l, o);
 	}));
+	// mark all messages between the logged in user and the friend as read
+	app.post("/:username/read", wrapHandler(async (request) => {
+	const { username } = request.params as { username: string };
+
+	return await markConversationRead(request.user.username, username);
+	}));
+
 	app.post("/:username", wrapHandler(async (request, reply) => {
 		const { username } = request.params as { username: string };
 		// validateBody — parse and validate message content
@@ -119,7 +184,6 @@ async function messagesRoutes(app: FastifyInstance) {
 		if (!body) return;
 		return await createMessage(request.user.username, username, body.content);
 	}));
-
 }
 
 export default messagesRoutes;

@@ -21,3 +21,18 @@ export function createMessage(username: string, content: string) {
 		body: JSON.stringify({ content }),
 	});
 }
+
+export interface UnreadConversation {
+	username: string;
+	unreadCount: number;
+}
+
+export function getUnreadMessages() {
+	return apiGet<UnreadConversation[]>(`${API_MESSAGE}/unread`);
+}
+
+export function markConversationRead(username: string) {
+	return apiPost<{ success: true }>(`${API_MESSAGE}/${username}/read`, {
+		method: "POST",
+	});
+}
