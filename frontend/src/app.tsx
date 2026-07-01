@@ -123,14 +123,16 @@ import("./app.scss");
 				return;
 			const socket = connectRealTime();
 			socket.on("friend:online", (friend: { username: string }) => {// when server sends a friendonline event 
+				console.log("ONLINE EVENT", friend);
 				setNotice(`${friend.username} ${t("realtime.friendOnline")}`);// display notification
 				setFriendsRefreshKey(k => k + 1);
-				setTimeout(() => setNotice(""), 3000);// remove notification in 3 seconds
+				setTimeout(() => setNotice(""), 10000);// remove notification in 3 seconds
 			});
 			socket.on("friend:offline", (friend: { username: string }) => {
+				console.log("OFFLINE EVENT", friend);
 				setNotice(`${friend.username} ${t("realtime.friendOffline")}`);
 				setFriendsRefreshKey(k => k + 1);
-				setTimeout(() => setNotice(""), 3000);
+				setTimeout(() => setNotice(""), 10000);
 			});
 			return () => {
 				socket.off("friend:online");
@@ -172,7 +174,20 @@ import("./app.scss");
 				<div className="main-layout">
 					{
 						notice && (
-							<div className="realtime-notice">
+							<div className="realtime-notice"
+							style={{
+								position: "fixed",
+								top: "20px",
+								left: "50%",
+								transform: "translateX(-50%)",
+								zIndex: 9999,
+								background: "#ffffff",
+								color: "#000000",
+								padding: "12px 20px",
+								borderRadius: "12px",
+								boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+							}}
+							>
 								{notice}
 							</div>
 						)

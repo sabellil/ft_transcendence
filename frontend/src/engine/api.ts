@@ -1,25 +1,10 @@
-// API_BASE — empty = relative URLs, proxied by frontend SSR server to backend
-export const API_BASE = "";
 
-
-
-
-
+export const API_BASE = import.meta.env.APIBASE_URL || "";
 export const API_AUTH   = `${API_BASE}/api/auth`;
-
-
 export const API_USER   = `${API_BASE}/api/user`;
-
-
 export const API_FRIEND = `${API_BASE}/api/friend`;
-
-
 export const API_BLOCK  = `${API_BASE}/api/block`;
-
-
 export const API_GUILD  = `${API_BASE}/api/guild`;
-
-
 export const API_CARD   = `${API_BASE}/api/card`;
 
 
