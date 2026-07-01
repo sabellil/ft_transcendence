@@ -109,6 +109,7 @@ model User {
   cardshipIds         Int[]             @default([])
   cardshipExchangeIds Int[]             @default([])
   messageIds          Int[]             @default([])
+  readMessageIds      Int[]             @default([])
 }
 
 model Usership {
