@@ -20,10 +20,10 @@ import { UsershipStatus } from "@prisma/client";
 async function loadMessageUser(
 where: Prisma.UserWhereUniqueInput,
 	tx: Prisma.TransactionClient | typeof prisma = prisma,
-): Promise<{ id: number; username: string; messageIds: number[]; usershipIds: number[] }> {
+): Promise<{ id: number; username: string; messageIds: number[]; usershipIds: number[]; readMessageIds: number[] }> {
 	const user = await tx.user.findUnique({
 		where,
-		select: { id: true, username: true, messageIds: true, usershipIds: true,},
+		select: { id: true, username: true, messageIds: true, usershipIds: true, readMessageIds: true, },
 	});
 	// if user is not found, throw an error
 	if (!user) { throw new Error("error.userNotFound");}
@@ -87,7 +87,7 @@ async function createMessage(username: string, friendUsername: string, content: 
 		// update both users to include the new message id
 		await tx.user.update({
 			where: { id: me.id },
-			data: { messageIds: { push: message.id } },
+			data: { messageIds: { push: message.id }, readMessageIds: { push: message.id } },
 		});
 		await tx.user.update({
 			where: { id: friendData.id },
