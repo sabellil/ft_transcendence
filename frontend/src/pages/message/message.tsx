@@ -5,7 +5,7 @@ import { sanitizeUsername, sanitize } from "../../validation.ts";
 import type { PublicUser } from "../../constants.ts";
 import { assetUrl } from "../../engine/api.ts";
 import { getFriendList } from "../../engine/friends.ts";
-import { getConversation, createMessage, type ChatMessage } from "../../engine/message.ts";
+import { getConversation, createMessage, markConversationRead, type ChatMessage } from "../../engine/message.ts";
 import { useAbortableLoad } from "../../app.tsx";
 
 function MessagePage({ isGuest }: { isGuest: boolean }) {
@@ -35,6 +35,7 @@ function MessagePage({ isGuest }: { isGuest: boolean }) {
 		try {
 			const d = await getConversation(friend.username);
 			if (d) setMessages(d);
+			await markConversationRead(friend.username);
 		} catch (err: any) {
 			setError(err.message);
 		}
