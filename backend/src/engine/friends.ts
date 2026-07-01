@@ -3,11 +3,13 @@
 // 1. Friend Request Initiation — User A sends request to User B:
 //    → User A: userId=B, status=Pending   |   User B: userId=A, status=Requested
 // 2. Friend Request Acceptance — User B accepts User A's request:
-//    → both rows flip to status=Friend
-// 3. Friend Request Decline — User B declines:
-//    → both rows deleted, both usershipIds cleaned
-// 4. Duplicate Request Prevention — Pending row already exists:
-//    → request ignored
+//    → both rows flip to status=Friend (missing reciprocal row is created)
+// 3. Cancel Outgoing — User A cancels their sent request:
+//    → A's row deleted if status=Pending, else kept
+//    → B's row deleted if status=Requested, else kept
+// 4. Decline Incoming — User B declines an incoming request:
+//    → B's row deleted if status=Requested, else kept
+//    → A's row deleted if status=Pending, else kept
 // 5. Block Initiation — User A blocks User B:
 //    → User A: userId=B, status=Blocked (one-directional)
 // 6. Block Prevents Incoming — blocked user tries to send request:
@@ -16,8 +18,8 @@
 //    → request not created, block persists
 // 8. Block Overwrites Friendship — block while friends:
 //    → User A: status→Blocked, User B's Friend row deleted
-// 9. Bidirectional Pending — B requests A while A already requested B:
-//    → B's existing Requested flips to Pending (both sides now Pending)
+// 9. Bidirectional Request — B requests A while A already requested B:
+//    → A's existing Pending flips to Requested (both sides now Requested)
 //    → either user can accept, which flips ALL rows to Friend
 
 
@@ -281,13 +283,14 @@ async function createFriendRequest(username: string, receiverUsername: string) {
 			if (existingRow.status === UsershipStatus.Friend) {
 				throw new Error("error.alreadyFriends");
 			}
-			// Pending or Requested → receiver already has a request toward sender [Rule 9]
-			// flip sender's Requested → Pending so both sides are Pending (no duplicate rows)
+			// Pending or Requested → bidirectional request detected [Rule 9]
+			// flip receiver's Pending → Requested so both sides are Requested
+			// either user can now accept
 			if (existingRow.status === UsershipStatus.Pending || existingRow.status === UsershipStatus.Requested) {
-				if (senderExisting && senderExisting.status === UsershipStatus.Requested) {
+				if (existingRow.status === UsershipStatus.Pending) {
 					await tx.usership.update({
-						where: { id: senderExisting.id },
-						data:  { status: UsershipStatus.Pending },
+						where: { id: existingRow.id },
+						data:  { status: UsershipStatus.Requested },
 					});
 				}
 				return { success: true };
@@ -359,6 +362,7 @@ async function getDirectionalFriendRequests(username: string, direction: "incomi
 
 
 // acceptFriendRequest — flip ALL Pending/Requested rows between both users to Friend
+// creates missing reciprocal Friend row so both sides always end up as friends
 async function acceptFriendRequest(username: string, senderUsername: string) {
 	// $transaction — prevent race conditions: all queries succeed or none
 	return prisma.$transaction(async (tx) => {
@@ -392,6 +396,32 @@ async function acceptFriendRequest(username: string, senderUsername: string) {
 			data:  { status: UsershipStatus.Friend },
 		});
 
+		// ensure both users have a Friend row (create missing reciprocal) [Rule 2]
+		const accepterHasRow = relevantRows.some(r => accepter.usershipIds.includes(r.id));
+		const senderHasRow = relevantRows.some(r => senderData.usershipIds.includes(r.id));
+
+		// before creating, check they don't already have a Friend row (prevents duplicates
+		// in case of legacy data where Friend + Pending rows coexist)
+		if (!accepterHasRow && !(await findUsershipRow(accepter, sender.id, UsershipStatus.Friend, tx))) {
+			const newRow = await tx.usership.create({
+				data: { userId: sender.id, status: UsershipStatus.Friend },
+			});
+			await tx.user.update({
+				where: { id: accepter.id },
+				data:  { usershipIds: { push: newRow.id } },
+			});
+		}
+
+		if (!senderHasRow && !(await findUsershipRow(senderData, accepter.id, UsershipStatus.Friend, tx))) {
+			const newRow = await tx.usership.create({
+				data: { userId: accepter.id, status: UsershipStatus.Friend },
+			});
+			await tx.user.update({
+				where: { id: sender.id },
+				data:  { usershipIds: { push: newRow.id } },
+			});
+		}
+
 		return { success: true };
 	});
 }
@@ -400,7 +430,7 @@ async function acceptFriendRequest(username: string, senderUsername: string) {
 
 
 
-// removeFriendRequest — decline request: delete both pending rows
+// removeFriendRequest — cancel/decline: delete matching rows per direction rules
 async function removeFriendRequest(username: string, targetUsername: string, direction: "incoming" | "outgoing") {
 	const isIncoming = direction === "incoming";
 
@@ -408,42 +438,51 @@ async function removeFriendRequest(username: string, targetUsername: string, dir
 	return prisma.$transaction(async (tx) => {
 		// lookupUser — resolve target username
 		const target = await lookupUser(targetUsername);
-		// loadUsershipUser — load my usership data
+		// loadUsershipUser — load both users' usership data
 		const me = await loadUsershipUser({ username }, tx);
+		const targetData = await loadUsershipUser({ id: target.id }, tx);
 
+		// expected status for my row and their row based on direction
 		const myStatus = isIncoming ? UsershipStatus.Requested : UsershipStatus.Pending;
-		// findUsershipRow — find my pending row
-		const myRow = await findUsershipRow(me, target.id, myStatus, tx);
-		// !myRow → not friends, reject [Rule 3]
-		if (!myRow) {
+		const theirStatus = isIncoming ? UsershipStatus.Pending : UsershipStatus.Requested;
+
+		// findUsershipRow — find my row (any status, not just expected)
+		const myRow = await findUsershipRow(me, target.id, undefined, tx);
+		// findUsershipRow — find their row (any status, not just expected)
+		const theirRow = await findUsershipRow(targetData, me.id, undefined, tx);
+
+		// match against expected status — delete only if status matches
+		const myRowMatches = myRow !== null && myRow.status === myStatus;
+		const theirRowMatches = theirRow !== null && theirRow.status === theirStatus;
+
+		// neither row matches expected status → nothing to cancel/decline
+		if (!myRowMatches && !theirRowMatches) {
 			throw new Error(isIncoming ? "error.noPendingFromUser" : "error.noPendingToUser");
 		}
 
-		// loadUsershipUser — load target's usership data
-		const targetData = await loadUsershipUser({ id: target.id }, tx);
-		const theirStatus = isIncoming ? UsershipStatus.Pending : UsershipStatus.Requested;
-		// findUsershipRow — find their reciprocal row
-		const theirRow = await findUsershipRow(targetData, me.id, theirStatus, tx);
+		// build delete list from matching rows only [Rule 3/4]
+		const idsToDelete: number[] = [];
+		if (myRowMatches) idsToDelete.push(myRow!.id);
+		if (theirRowMatches) idsToDelete.push(theirRow!.id);
 
-		const idsToDelete = [myRow.id];
-		// theirRow → peer has matching row, delete both [Rule 3]
-		if (theirRow) {
-			idsToDelete.push(theirRow.id);
+		// deleteMany — delete matched rows
+		if (idsToDelete.length) {
+			await tx.usership.deleteMany({ where: { id: { in: idsToDelete } } });
 		}
-		// deleteMany — delete both pending rows [Rule 3]
-		await tx.usership.deleteMany({ where: { id: { in: idsToDelete } } });
-		// update — remove my row from usershipIds array
-		await tx.user.update({
-			where: { id: me.id },
-			data:  { usershipIds: me.usershipIds.filter(id => id !== myRow.id) },
-		});
 
-		// theirRow → remove their old row from array [Rule 3]
-		if (theirRow) {
-			// update — remove their row from usershipIds array
+		// update — remove my matched row from usershipIds array
+		if (myRowMatches) {
+			await tx.user.update({
+				where: { id: me.id },
+				data:  { usershipIds: me.usershipIds.filter(id => id !== myRow!.id) },
+			});
+		}
+
+		// update — remove their matched row from usershipIds array
+		if (theirRowMatches) {
 			await tx.user.update({
 				where: { id: target.id },
-				data:  { usershipIds: targetData.usershipIds.filter(id => id !== theirRow.id) },
+				data:  { usershipIds: targetData.usershipIds.filter(id => id !== theirRow!.id) },
 			});
 		}
 
