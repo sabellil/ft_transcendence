@@ -22,6 +22,8 @@ type JwtPayload = {
 // Map to keep track of online users and their corresponding socket IDs, starts empty
 const onlineSockets = new Map<number, Set<string>>();
 
+const offlineTimers = new Map<number, NodeJS.Timeout>();
+
 // getCookie - extract a specific cookie value from the raw cookie string
 function getCookie(rawCookie: string | undefined, name: string): string | null {
     if (!rawCookie) return null;
@@ -109,10 +111,15 @@ export function setupRealTime(app: FastifyInstance) {
                 socket.disconnect(true);
                 return;
             }
+            const pendingOffline = offlineTimers.get(user.id);
+            if (pendingOffline) {
+                clearTimeout(pendingOffline);
+                offlineTimers.delete(user.id);
+            }
             socket.data.userId = user.id; // Store the user ID in the socket's data for later use
             socket.data.username = user.username; // Store the username in the socket's data for later use  
             const existingSockets = onlineSockets.get(user.id) || new Set<string>();    
-            const wasOffline = existingSockets.size === 0; // Check if the user was previously offline
+            const wasOffline = existingSockets.size === 0 && !pendingOffline; // Check if the user was previously offline
             existingSockets.add(socket.id); // Add the new socket ID to the set of online sockets for this user
             onlineSockets.set(user.id, existingSockets); // Update the map with the new set of sockets
             if (wasOffline) {
@@ -127,16 +134,22 @@ export function setupRealTime(app: FastifyInstance) {
                 if (!sockets)
                     return;
                 sockets.delete(socket.id);
-                if (sockets.size > 0){
+                if (sockets.size > 0) {
                     onlineSockets.set(user.id, sockets);
                     return;
                 }
                 onlineSockets.delete(user.id);
-                await prisma.user.update({
-                    where: { id: user.id },
-                    data: { status: UserStatus.Offline }, // Update the user's status to offline in the database
-                });
-                await notifyFriends(user.id, "friend:offline"); // Notify friends that the user is now offline
+                const timer = setTimeout(async () => {
+                    if (onlineSockets.has(user.id))
+                        return;
+                    offlineTimers.delete(user.id);
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: { status: UserStatus.Offline },
+                    });
+                    await notifyFriends(user.id, "friend:offline");
+                }, 2000);
+                offlineTimers.set(user.id, timer);
             });
         } catch {
             socket.disconnect(true); // Disconnect the socket if any error occurs during the connection process
